@@ -2,5 +2,5 @@
     "totalChoices":4,
     "totalQuestions":10,
     "repeatBlackList":2,
-    "warmupTime":4
+    "warmupTimeSeconds":5
 }

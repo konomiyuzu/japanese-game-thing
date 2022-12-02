@@ -8,6 +8,7 @@ dataLoader.init()
     const progressText = document.getElementById("progress");
 
 
+    //generates the game buttons
     for(let i = 0; i < settings.totalChoices; i++){
         let div = document.createElement("div")
         div.id = i;
@@ -28,24 +29,30 @@ dataLoader.init()
     let correct = 0;
     let incorrect = 0;
 
-    let countdown = 3
-    const warmupTime = settings.warmupTime * 1000
-    const dim = document.getElementById("dim");
-
-    let interval = setInterval(()=>{
-        let text = countdown <= 0? "Go!" : countdown
-        dim.innerHTML = text
-        countdown--
-    },warmupTime/5)
-
-    setTimeout(()=>{
-        clearInterval(interval)
-        dim.setAttribute("style","display:none");
-        generateQuestion()
-        timer.start();
-    },warmupTime)
-
     
+    const warmupTime = settings.warmupTimeSeconds * 1000
+    
+    //countdown
+    countdown(3,warmupTime,1000)
+    function countdown(numberToCountFrom, warmupTimeMilliseconds, timeBetweenCountdownMilliseconds){
+
+        const dim = document.getElementById("dim");
+        dim.setAttribute("style","display:flex");
+
+        let interval = setInterval(()=>{
+            let text = numberToCountFrom <= 0? "Go!" : numberToCountFrom
+            dim.innerHTML = text
+            numberToCountFrom--
+
+        },timeBetweenCountdownMilliseconds)
+    
+        setTimeout(()=>{
+            clearInterval(interval)
+            dim.setAttribute("style","display:none");
+            generateQuestion()
+            timer.start();
+        },warmupTimeMilliseconds)
+    }
 
     function answer(choice){
         let id = choice.target.id;
@@ -80,6 +87,9 @@ dataLoader.init()
 
         let duplicateCheck = lastQuestion.map(x => x[1])
         while(isDuplicate){
+            //TODO
+            //refactor this to maybe just remove the QApair from letters
+            //instead of randomly hoping we dont get a duplicate
             nextQA = randomElementFromArray(letters)
 
             if(duplicateCheck.indexOf(nextQA[1]) == -1){
@@ -92,15 +102,13 @@ dataLoader.init()
 
 
         QApair = nextQA;
-        console.log(QApair[1]);
         lastQuestion.push(QApair);
         questionText.innerHTML = QApair[1];
 
         let possibleAnswers = letters.map(x => x[0])
-        
         possibleAnswers.splice(possibleAnswers.indexOf(QApair[0]),1)
-        
 
+        
         choices = possibleAnswers.splice(0,settings.totalChoices-1);
         choices.push(QApair[0])
         choices = shuffle(choices)
