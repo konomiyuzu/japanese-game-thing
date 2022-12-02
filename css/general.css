@@ -8,7 +8,6 @@ body {
     );
 
     background-attachment: fixed;
-    overflow-x: hidden;
 }
 
 .flex-container{
