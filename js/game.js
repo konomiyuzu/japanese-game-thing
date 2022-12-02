@@ -108,10 +108,13 @@ dataLoader.init()
         let possibleAnswers = letters.map(x => x[0])
         possibleAnswers.splice(possibleAnswers.indexOf(QApair[0]),1)
 
+
         
+        choices = shuffle(choices)
         choices = possibleAnswers.splice(0,settings.totalChoices-1);
         choices.push(QApair[0])
         choices = shuffle(choices)
+        
 
         for(let i = 0; i < settings.totalChoices; i++){
             document.getElementById(i).innerHTML = choices[i]
