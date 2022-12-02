@@ -12,7 +12,7 @@ dataLoader.init()
     for(let i = 0; i < settings.totalChoices; i++){
         let div = document.createElement("div")
         div.id = i;
-        div.setAttribute("class","gameButton flex-container center-horizontal center-vertical")
+        div.setAttribute("class","gameButton box flex-container center-horizontal center-vertical")
         div.addEventListener("click",answer)
         gameButtonsContainer.appendChild(div)
     }

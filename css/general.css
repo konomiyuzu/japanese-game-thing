@@ -27,3 +27,8 @@ body {
     align-items: center;
 }
 
+.box{
+    border-radius: 5px;
+    border: solid grey 2px;
+    background-color: #ffffff;
+}
