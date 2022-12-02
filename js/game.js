@@ -105,6 +105,9 @@ dataLoader.init()
         lastQuestion.push(QApair);
         questionText.innerHTML = QApair[1];
 
+        //TODO
+        //possibly refactor this to allow for duplicate answers
+        //(for katakana and hiragana in the same "game pack")
         let possibleAnswers = letters.map(x => x[0])
         possibleAnswers.splice(possibleAnswers.indexOf(QApair[0]),1)
 
