@@ -113,7 +113,7 @@ dataLoader.init()
 
 
         
-        choices = shuffle(choices)
+        choices = shuffle(possibleAnswers)
         choices = possibleAnswers.splice(0,settings.totalChoices-1);
         choices.push(QApair[0])
         choices = shuffle(choices)
