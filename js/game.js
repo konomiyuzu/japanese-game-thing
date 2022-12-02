@@ -26,6 +26,7 @@ dataLoader.init()
     let lastQuestion = [];
     let choices;
     let QApair;
+    let answers = [];
     let correct = 0;
     let incorrect = 0;
 
@@ -56,9 +57,21 @@ dataLoader.init()
 
     function answer(choice){
         let id = choice.target.id;
-        if(QApair[0] == choices[id]) correct++
+
+        const correctAnswer = QApair[0];
+        const chosenAnswer = choices[id];
+        const answerIsCorrect = correctAnswer == chosenAnswer;
+        if(answerIsCorrect) correct++
         else incorrect++
 
+        let answer = {
+            answerIsCorrect:answerIsCorrect,
+            questionText:QApair[1],
+            correctText:correctAnswer,
+            chosenText:chosenAnswer
+        }
+
+        answers.push(answer);
         progress++
         
         updateProgress()
@@ -71,7 +84,18 @@ dataLoader.init()
     function endGame(){
         timer.stop()
 
-        alert(`correct: ${correct}\nincorrect: ${incorrect}\ntime: ${timer.timeToString()}`)
+        resultsHandler.showResultsScreen()
+
+        for(let answer of answers){
+            const questionText = answer.questionText;
+            const correctText = answer.correctText;
+            const chosenText = answer.chosenText;
+            const answerIsCorrect = answer.answerIsCorrect;
+
+            resultsHandler.addResult(questionText, correctText, chosenText, answerIsCorrect)
+        }
+
+        //alert(`correct: ${correct}\nincorrect: ${incorrect}\ntime: ${timer.timeToString()}`)
     }
 
     function generateQuestion(){

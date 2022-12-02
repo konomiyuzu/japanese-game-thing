@@ -52,22 +52,23 @@
 </body>
 
 <template id="resultTemplate">
-    <div class="result box flex-container center-vertical ${CORRECT}">
+    <div class="result box flex-container center-vertical">
         <div class="result-questionText-box box flex-container center-horizontal center-vertical">
-            <h1 class="result-questionText">${QUESTIONTEXT}</h1>
+            <h1 class="result-questionText" name="questionText"></h1>
         </div>
 
         <div class="result-Text-box box flex-container center-horizontal center-vertical">
-            <p>Correct Answer: ${CORRECTANSWER}</p>
+            <p name="correctText"></p>
         </div>
 
         <div class="result-Text-box box flex-container center-horizontal center-vertical">
-            <p>Chosen Answer: ${CHOSENANSWER}</p>
+            <p name="chosenText"></p>
         </div>
     </div>
-</div>
+</template>
 
 <script src="js/dataLoader.js"></script>
+<script src="js/resultsHandler.js" defer></script>
 <script src="js/game.js" defer></script>
 <script src="js/timer.js"></script>
 
