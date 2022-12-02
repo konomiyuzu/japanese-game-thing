@@ -12,12 +12,18 @@
 </head>
 
 <body>
-    <div class="dim-screen flex-container center-horizontal center-vertical" id="dim"></div>
-    <!--div class="dim-screen">
-        <div class="results-container">
+    <div class="dim-screen countdownText flex-container center-horizontal center-vertical" id="dim"></div>
 
+    <div class="dim-screen flex-container center-horizontal center-vertical" style="display: none;" id="results">
+        <div class="results-box box">
+            <h1 class="results-header-text">Results</h1>
+            <div class="results-container flex-container center-horizontal" id="resultsContainer">
+
+            </div>
+            
         </div>
-    </div -->
+    </div>
+
     <div class="flex-container center-horizontal">
         <div class="progress">
             <p id="progress"></p>
@@ -44,6 +50,24 @@
 
 
 </body>
+
+<!-- template, should be deleted after loading -->
+<div id="resultTemplate">
+    <div class="result box flex-container center-vertical ${CORRECT}">
+        <div class="result-questionText-box box flex-container center-horizontal center-vertical">
+            <h1 class="result-questionText">${QUESTIONTEXT}</h1>
+        </div>
+
+        <div class="result-Text-box box flex-container center-horizontal center-vertical">
+            <p>Correct Answer: ${CORRECTANSWER}</p>
+        </div>
+
+        <div class="result-Text-box box flex-container center-horizontal center-vertical">
+            <p>Chosen Answer: ${CHOSENANSWER}</p>
+        </div>
+    </div>
+</div>
+
 <script src="js/dataLoader.js"></script>
 <script src="js/game.js" defer></script>
 <script src="js/timer.js"></script>

@@ -10,6 +10,10 @@ body {
     background-attachment: fixed;
 }
 
+.disable-scroll{
+    overflow-y: hidden;
+}
+
 .flex-container{
     display:flex;
 }
