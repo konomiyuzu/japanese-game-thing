@@ -35,3 +35,15 @@ body {
     border: solid grey 2px;
     background-color: #ffffff;
 }
+
+.dim-screen{
+    position: fixed;
+    top:0;
+    bottom:0;
+    right:0;
+
+    background-color:rgba(0, 0, 0, 0.8);
+
+    width: 100vw;
+    height: 100vh;
+}
