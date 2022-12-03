@@ -89,7 +89,7 @@ class ResultsHandler {
     }
 
     updateTimeText() {
-        this.resultsTimeText.innerHTML = `time: ${timeString}`
+        this.resultsTimeText.innerHTML = `time: ${this.timeString}`
     }
 
     updateScoreText() {
