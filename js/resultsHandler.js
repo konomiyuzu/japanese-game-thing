@@ -19,6 +19,12 @@ class ResultsHandler {
         this.score = 0;
         this.scoreMax = 0;
         this.timeString = "00:00:000";
+
+        this.init();
+    }
+
+    init(){
+        this.showDetailedButton.addEventListener("click", this.toggleDetailedResults.bind(this));
     }
 
     #createResult(questionText, correctText, chosenText, answerIsCorrect) {
@@ -72,22 +78,30 @@ class ResultsHandler {
     }
 
     updateTimeText() {
-        this.resultsTimeText.innerHTML = `time: ${timer.timeToString()}`
+        this.resultsTimeText.innerHTML = `time: ${timeString}`
     }
 
     updateScoreText() {
         this.resultsScoreText.innerHTML = `score: ${this.score}/${this.scoreMax}`
     }
 
-    toggleDetailedResults(resultsHandler = this) {
-        if (resultsHandler.showDetailedResults) {
-            resultsHandler.resultsContainer.setAttribute("style", "display:none;")
-            resultsHandler.showDetailedResults = false;
-            resultsHandler.showDetailedButtonElement.innerHTML = "show detailed results";
+    updateAccuracyText(){
+        this.resultsAccuracyText.innerHTML = `accuracy: ${this.accuracyString}`
+    }
+
+    updatePointTexxt(){
+        this.resultsScoreText.innerHTML = `points: ${this.points}`
+    }
+
+    toggleDetailedResults() {
+        if (this.showDetailedResults) {
+            this.resultsContainer.setAttribute("style", "display:none;")
+            this.showDetailedResults = false;
+            this.showDetailedButton.innerHTML = "show detailed results";
         } else {
-            resultsHandler.resultsContainer.setAttribute("style", "display:flex;")
-            resultsHandler.showDetailedResults = true;
-            resultsHandler.showDetailedButtonElement.innerHTML = "hide detailed results";
+            this.resultsContainer.setAttribute("style", "display:flex;")
+            this.showDetailedResults = true;
+            this.showDetailedButton.innerHTML = "hide detailed results";
         }
     }
 
