@@ -5,7 +5,9 @@ class ResultsHandler {
         resultsContainer,
         showDetailedButton,
         resultsTimeText,
-        resultsScoreText
+        resultsScoreText,
+        resultsAccuracyText,
+        resultsPointsText
     ) {
         this.template = templateElement;
         this.resultsScreenElement = resultsScreenElement;
@@ -13,11 +15,19 @@ class ResultsHandler {
         this.showDetailedButton = showDetailedButton;
         this.resultsTimeText = resultsTimeText;
         this.resultsScoreText = resultsScoreText;
+        this.resultsAccuracyText = resultsAccuracyText;
+        
+        //difference between points and score is score is just correctAnswers/totalQuestions while
+        //points are calculated with the accuracy and the time with faster times and higher accuracy meaning higher scores
+        //they should be calculated externally
+        this.resultsPointsText = resultsPointsText;
 
         this.results = [];
         this.showDetailedResults = false;
         this.score = 0;
         this.scoreMax = 0;
+        this.accuracyString = "0.00%";
+        this.points = 0;
         this.timeString = "00:00:000";
 
         this.init();
@@ -26,6 +36,7 @@ class ResultsHandler {
     init(){
         this.showDetailedButton.addEventListener("click", this.toggleDetailedResults.bind(this));
     }
+    
 
     #createResult(questionText, correctText, chosenText, answerIsCorrect) {
         let result = this.template.content.cloneNode(true);
