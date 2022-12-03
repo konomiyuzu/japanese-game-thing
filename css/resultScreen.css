@@ -68,3 +68,23 @@
 .incorrect{
     background-color: #ff9999;
 }
+
+.results-text-container{
+    justify-content: left;
+    flex-direction: column;
+}
+
+.results-text{
+    margin:auto;
+    font-size: 20px;
+}
+
+.results-show{
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+    user-select: none;
+}
+
+.results-show:hover{
+    transform: scale(1.1);
+}
