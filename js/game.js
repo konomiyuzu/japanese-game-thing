@@ -166,17 +166,19 @@ dataLoader.init()
         progressText.innerHTML = `${progress}/${settings.totalQuestions}`
     }
 
-    //graph of function : https://www.desmos.com/calculator/obfhikfxrr
+    //graph of function : https://www.desmos.com/calculator/inzyqoygjb
     function calculatePoints(){
         const basePoints = 1000;
         //here since its planned to be configurable
+        const secondsPerQuestion = 1;
         const accuracyOffset = 0;
         const accuracyWeight = 2;
+        
         const accuracy = Math.pow(calculateAccurracy() + accuracyOffset, accuracyWeight);
 
         const timeSeconds = timer.currentTime/1000;
 
-        const inverseFunctionResult = 1/((1/settings.totalQuestions)*timeSeconds);
+        const inverseFunctionResult = 1/((1/settings.totalQuestions * secondsPerQuestion)*timeSeconds);
         const out = basePoints * accuracy * inverseFunctionResult;
         return out;
     }
