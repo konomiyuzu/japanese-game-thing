@@ -166,14 +166,14 @@ dataLoader.init()
         progressText.innerHTML = `${progress}/${settings.totalQuestions}`
     }
 
-    //graph of function : https://www.desmos.com/calculator/inzyqoygjb
+    //graph of function : https://www.desmos.com/calculator/nmbo5dmdpn
     function calculatePoints(){
         const basePoints = 1000;
         //here since its planned to be configurable
         const secondsPerQuestion = 1;
         const accuracyOffset = 0;
         const accuracyWeight = 2;
-        
+
         const accuracy = Math.pow(calculateAccurracy() + accuracyOffset, accuracyWeight);
 
         const timeSeconds = timer.currentTime/1000;
