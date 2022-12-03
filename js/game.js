@@ -174,8 +174,6 @@ dataLoader.init()
 
         const inverseFunctionResult = 1/((1/settings.totalQuestions)*timeSeconds);
         const out = basePoints * accuracy * inverseFunctionResult;
-
-        console.log(accuracy, inverseFunctionResult, out);
         return out;
     }
 
@@ -186,7 +184,18 @@ dataLoader.init()
 })
 
 function shuffle(arr) {
-    return arr.sort(() => Math.random() - 0.5);
+    //to not remove elements from the original array, we duplicate it
+    let arr2 = [...arr]
+    let length = arr2.length;
+
+    let output = [];
+    while(length != 0){
+        let element = arr2.splice(Math.floor(Math.random() * length),1)[0];
+        output.push(element);
+        length--;
+    }
+
+    return output;
   }
 
 function randomElementFromArray(arr){
