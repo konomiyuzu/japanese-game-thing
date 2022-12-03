@@ -79,8 +79,7 @@ class ResultsHandler {
     }
 
     showResultsScreen() {
-        this.updateScoreText();
-        this.updateTimeText();
+        this.updateText() 
         this.resultsScreenElement.setAttribute("style", "display:flex;")
     }
 
@@ -88,20 +87,11 @@ class ResultsHandler {
         this.resultsScreenElement.setAttribute("style", "display:none;")
     }
 
-    updateTimeText() {
+    updateText() {
         this.resultsTimeText.innerHTML = `time: ${this.timeString}`
-    }
-
-    updateScoreText() {
         this.resultsScoreText.innerHTML = `score: ${this.score}/${this.scoreMax}`
-    }
-
-    updateAccuracyText(){
         this.resultsAccuracyText.innerHTML = `accuracy: ${this.accuracyString}`
-    }
-
-    updatePointTexxt(){
-        this.resultsScoreText.innerHTML = `points: ${this.points}`
+        this.resultsPointsText.innerHTML = `points: ${this.points}`
     }
 
     toggleDetailedResults() {
@@ -123,6 +113,8 @@ const resultsContainerElement = document.getElementById("resultsContainer");
 const showDetailedButtonElement = document.getElementById("showResults");
 const resultsTimeText = document.getElementById("resultsTime");
 const resultsScoreText = document.getElementById("resultsScore");
+const resultsAccuracyText = document.getElementById("resultsAccuracy")
+const resultsPointsText = document.getElementById("resultsPoints")
 
 const resultsHandler = new ResultsHandler(
     resultTemplate,
@@ -130,5 +122,7 @@ const resultsHandler = new ResultsHandler(
     resultsContainerElement,
     showDetailedButtonElement,
     resultsTimeText,
-    resultsScoreText
+    resultsScoreText,
+    resultsAccuracyText,
+    resultsPointsText
 )

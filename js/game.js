@@ -1,3 +1,6 @@
+//TODO rewrite this entire file as a class
+//get rid of settings.x and replace with constants
+
 dataLoader.init()
 .then(() => {
     const settings = JSON.parse(localStorage.getItem("settings"));
@@ -85,6 +88,10 @@ dataLoader.init()
         resultsHandler.score = correct;
         resultsHandler.scoreMax = settings.totalQuestions;
         resultsHandler.timeString = timer.timeToString();
+        resultsHandler.points = calculatePoints().toFixed(0);
+
+        const accuracy = (calculateAccurracy()*100).toFixed(2)
+        resultsHandler.accuracyString = `${accuracy}%`;
 
         resultsHandler.showResultsScreen()
 
@@ -154,6 +161,28 @@ dataLoader.init()
     function updateProgress(){
         progressText.innerHTML = `${progress}/${settings.totalQuestions}`
     }
+
+    //graph of function : https://www.desmos.com/calculator/obfhikfxrr
+    function calculatePoints(){
+        const basePoints = 1000;
+        //here since its planned to be configurable
+        const accuracyOffset = 0;
+        const accuracyWeight = 2;
+        const accuracy = Math.pow(calculateAccurracy() + accuracyOffset, accuracyWeight);
+
+        const timeSeconds = timer.currentTime/1000;
+
+        const inverseFunctionResult = 1/((1/settings.totalQuestions)*timeSeconds);
+        const out = basePoints * accuracy * inverseFunctionResult;
+
+        console.log(accuracy, inverseFunctionResult, out);
+        return out;
+    }
+
+    function calculateAccurracy(){
+        return correct/settings.totalQuestions;
+    }
+
 })
 
 function shuffle(arr) {
