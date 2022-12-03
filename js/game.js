@@ -1,6 +1,10 @@
 //TODO rewrite this entire file as a class
 //get rid of settings.x and replace with constants
 
+
+//for debugging, remove later
+localStorage.clear()
+
 dataLoader.init()
 .then(() => {
     const settings = JSON.parse(localStorage.getItem("settings"));
