@@ -50,4 +50,4 @@ class Timer{
     }
 }
 
-let timer = new Timer(document.getElementById("timerText"),1)
+const timer = new Timer(document.getElementById("timerText"),1)

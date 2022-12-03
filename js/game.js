@@ -28,7 +28,6 @@ dataLoader.init()
     let QApair;
     let answers = [];
     let correct = 0;
-    let incorrect = 0;
 
     
     const warmupTime = settings.warmupTimeSeconds * 1000
@@ -62,7 +61,6 @@ dataLoader.init()
         const chosenAnswer = choices[id];
         const answerIsCorrect = correctAnswer == chosenAnswer;
         if(answerIsCorrect) correct++
-        else incorrect++
 
         let answer = {
             answerIsCorrect:answerIsCorrect,
@@ -83,6 +81,10 @@ dataLoader.init()
 
     function endGame(){
         timer.stop()
+
+        resultsHandler.score = correct;
+        resultsHandler.scoreMax = settings.totalQuestions;
+        resultsHandler.timeString = timer.timeToString();
 
         resultsHandler.showResultsScreen()
 
