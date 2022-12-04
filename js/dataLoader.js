@@ -1,12 +1,12 @@
 
 class DataLoader {
-    async fetchJson(file){
+    static async fetchJson(file){
         const response = await fetch(file)
         return await response.json()
     }
 
 
-    async init() {
+    static async init() {
             if (localStorage.getItem("settings") == null) {
                 let json = await this.fetchJson("./jsons/settings-default.json")
                 localStorage.setItem("settings", JSON.stringify(json))
@@ -19,5 +19,3 @@ class DataLoader {
         
     }
 }
-
-let dataLoader = new DataLoader();

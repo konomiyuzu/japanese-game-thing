@@ -1,22 +1,13 @@
 class ResultsHandler {
-    constructor(
-        templateElement,
-        resultsScreenElement,
-        resultsContainer,
-        showDetailedButton,
-        resultsTimeText,
-        resultsScoreText,
-        resultsAccuracyText,
-        resultsPointsText
-    ) {
-        this.template = templateElement;
-        this.resultsScreenElement = resultsScreenElement;
-        this.resultsContainer = resultsContainer;
-        this.showDetailedButton = showDetailedButton;
-        this.resultsTimeText = resultsTimeText;
-        this.resultsScoreText = resultsScoreText;
-        this.resultsAccuracyText = resultsAccuracyText;
-        
+    constructor(elements) {
+        this.template = elements.templateElement;
+        this.resultsScreenElement = elements.resultsScreenElement;
+        this.resultsContainer = elements.resultsContainer;
+        this.showDetailedButton = elements.showDetailedButton;
+        this.resultsTimeText = elements.resultsTimeText;
+        this.resultsScoreText = elements.resultsScoreText;
+        this.resultsAccuracyText = elements.resultsAccuracyText;
+
         //difference between points and score is score is just correctAnswers/totalQuestions while
         //points are calculated with the accuracy and the time with faster times and higher accuracy meaning higher scores
         //they should be calculated externally
@@ -33,10 +24,10 @@ class ResultsHandler {
         this.init();
     }
 
-    init(){
+    init() {
         this.showDetailedButton.addEventListener("click", this.toggleDetailedResults.bind(this));
     }
-    
+
 
     #createResult(questionText, correctText, chosenText, answerIsCorrect) {
         let result = this.template.content.cloneNode(true);
@@ -79,7 +70,7 @@ class ResultsHandler {
     }
 
     showResultsScreen() {
-        this.updateText() 
+        this.updateText()
         this.resultsScreenElement.setAttribute("style", "display:flex;")
     }
 
@@ -116,13 +107,14 @@ const resultsScoreText = document.getElementById("resultsScore");
 const resultsAccuracyText = document.getElementById("resultsAccuracy")
 const resultsPointsText = document.getElementById("resultsPoints")
 
-const resultsHandler = new ResultsHandler(
-    resultTemplate,
-    resultsScreenElement,
-    resultsContainerElement,
-    showDetailedButtonElement,
-    resultsTimeText,
-    resultsScoreText,
-    resultsAccuracyText,
-    resultsPointsText
-)
+const element = {
+    templateElement: resultTemplate,
+    resultsScreenElement: resultsScreenElement,
+    resultsContainer: resultsContainerElement,
+    showDetailedButton: showDetailedButtonElement,
+    resultsTimeText: resultsTimeText,
+    resultsScoreText: resultsScoreText,
+    resultsAccuracyText: resultsAccuracyText,
+    resultsPointsTex: resultsPointsText
+}
+const resultsHandler = new ResultsHandler(element)

@@ -5,6 +5,32 @@
 //for debugging, remove later
 localStorage.clear()
 
+class Game{
+    constructor(){
+        this.gameButtonsContainer = gameButtonsContainer;
+        this.settings = settings;
+    }
+
+    async init(){
+        await DataLoader.init()
+
+        this.generateGameButtons(this.settings.totalChoices, this.answer.bind(this))
+    }
+
+    generateGameButtons(amount, eventListenerFunction){
+        for(let i = 0; i < settings.totalChoices; i++){
+            let div = document.createElement("div")
+            div.id = i;
+            div.setAttribute("class","gameButton box flex-container center-horizontal center-vertical")
+            div.addEventListener("click",answer)
+            this.gameButtonsContainer.appendChild(div)
+        }
+    }
+
+    answer(choice){
+
+    }
+}
 dataLoader.init()
 .then(() => {
     const settings = JSON.parse(localStorage.getItem("settings"));
