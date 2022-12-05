@@ -107,7 +107,7 @@ const resultsScoreText = document.getElementById("resultsScore");
 const resultsAccuracyText = document.getElementById("resultsAccuracy")
 const resultsPointsText = document.getElementById("resultsPoints")
 
-const element = {
+const resultHandlerElements = {
     templateElement: resultTemplate,
     resultsScreenElement: resultsScreenElement,
     resultsContainer: resultsContainerElement,
@@ -117,4 +117,4 @@ const element = {
     resultsAccuracyText: resultsAccuracyText,
     resultsPointsTex: resultsPointsText
 }
-const resultsHandler = new ResultsHandler(element)
+const resultsHandler = new ResultsHandler(resultHandlerElements)

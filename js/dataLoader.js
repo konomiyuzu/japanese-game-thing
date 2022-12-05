@@ -1,5 +1,6 @@
 
 class DataLoader {
+    static activeGamePack;
     static async fetchJson(file){
         const response = await fetch(file)
         return await response.json()
@@ -12,10 +13,6 @@ class DataLoader {
                 localStorage.setItem("settings", JSON.stringify(json))
             }
             
-            if (localStorage.getItem("testgame") == null) {
-                let json = await this.fetchJson("./jsons/game-1.json")
-                localStorage.setItem("testgame", JSON.stringify(json))
-            }
-        
+            this.activeGamePack = await this.fetchJson("./jsons/gamepack.json")
     }
 }

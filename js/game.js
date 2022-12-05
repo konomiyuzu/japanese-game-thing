@@ -6,33 +6,75 @@
 localStorage.clear()
 
 class Game{
-    constructor(){
-        this.gameButtonsContainer = gameButtonsContainer;
-        this.settings = settings;
+    constructor(elements){
+        this.gameButtonsContainer = elements.gameButtonContainer;
+        this.template = elements.choiceButtonTemplate;
+
+        this.init();
     }
 
     async init(){
-        await DataLoader.init()
-
-        this.generateGameButtons(this.settings.totalChoices, this.answer.bind(this))
+        await DataLoader.init();
+        this.settings = JSON.parse(localStorage.getItem("settings"));
+        this.gamePack = DataLoader.activeGamePack;
+        this.generateGameButtons(this.settings.totalChoices);
     }
 
-    generateGameButtons(amount, eventListenerFunction){
-        for(let i = 0; i < settings.totalChoices; i++){
-            let div = document.createElement("div")
+    generateGameButtons(amount){
+        for(let i = 0; i < amount; i++){
+            let div = this.template.content.cloneNode(true).firstElementChild;
+
+            div.addEventListener("click",this.answer.bind(this));
             div.id = i;
-            div.setAttribute("class","gameButton box flex-container center-horizontal center-vertical")
-            div.addEventListener("click",answer)
-            this.gameButtonsContainer.appendChild(div)
+
+            this.gameButtonsContainer.appendChild(div);
         }
     }
 
-    answer(choice){
+    generateQuestion(){
 
     }
+
+    answer(choiceButtonDiv){
+
+    }
+
+    shuffle(arr) {
+        //to not remove elements from the original array, we duplicate it
+        let arr2 = [...arr]
+        let length = arr2.length;
+    
+        let output = [];
+        while(length != 0){
+            let element = arr2.splice(randomNumber(0,length - 1),1)[0];
+            output.push(element);
+            length--;
+        }
+    
+        return output;
+      }
+    
+    randomElementFromArray(arr){
+        let out = arr[randomNumber(0,arr.length - 1)]
+        return out;
+    }
+    
+    randomNumber(min,max){
+        return Math.floor((Math.random() * (max + 1 - min))) + min;
+    }
 }
-dataLoader.init()
+
+const gameButtonContainer = document.getElementById("gameButtonsContainer");
+const choiceButtonTemplate = document.getElementById("choiceButtonTemplate");
+
+const gameElements = {
+    gameButtonContainer:gameButtonContainer,
+    choiceButtonTemplate:choiceButtonTemplate
+}
+const game = new Game(gameElements)
+DataLoader.init()
 .then(() => {
+    return
     const settings = JSON.parse(localStorage.getItem("settings"));
     const game = JSON.parse(localStorage.getItem("testgame"));
 
@@ -215,22 +257,3 @@ dataLoader.init()
 
 })
 
-function shuffle(arr) {
-    //to not remove elements from the original array, we duplicate it
-    let arr2 = [...arr]
-    let length = arr2.length;
-
-    let output = [];
-    while(length != 0){
-        let element = arr2.splice(Math.floor(Math.random() * length),1)[0];
-        output.push(element);
-        length--;
-    }
-
-    return output;
-  }
-
-function randomElementFromArray(arr){
-    let out = arr[Math.floor(Math.random() * arr.length)]
-    return out
-}
