@@ -1,0 +1,6 @@
+class GamePackParser{
+    constructor(){
+
+    }
+}
+

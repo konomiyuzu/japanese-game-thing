@@ -1,13 +1,7 @@
-
 class Timer{
-    constructor(element,time){
-        this.element= element;
-        this.intervalID = undefined;
-        this.intervalTime = time;
-        this.currentTime = 0;
-    }
+    #startTime = 0;
 
-    timeToString(time = this.currentTime){
+    static formatTime(time = this.currentTime){
         let minutes = Math.floor(time/60000)
         let seconds = Math.floor((time % 60000)/1000)
         let milliseconds = Math.floor((time % 60000) % 1000)
@@ -24,30 +18,59 @@ class Timer{
         return `${minutesText}:${secondsText}:${millisecondsText}`
     }
 
+    get currentTime(){
+        return Date.now() - this.#startTime;
+    }
+
     start(){
-        if(this.startTime == null) this.startTime = Date.now()
-        else this.startTime += Date.now() - this.lastStoppedTime
-        
-        this.intervalID = setInterval(()=>{
-            this.currentTime = Date.now() - this.startTime;
-
-            this.updateElementText(this.timeToString())
-        },this.intervalTime)
-    }
-
-    updateElementText(string){
-        this.element.innerHTML = string;
-    }
-
-    stop(){
-        clearInterval(this.intervalID)
-        this.lastStoppedTime = Date.now()
-    }
-
-    reset(){
-        this.startTime = null;
-        this.currentTime = 0;
+        this.#startTime = Date.now();
     }
 }
 
-let timer = new Timer(document.getElementById("timerText"),1)
+class GlobalTimer{
+    static currentTime = 0;
+    static intervalID;
+    static element;
+    static initialized = false;
+
+    static #startTime;
+    static #lastStoppedTime;
+
+    static init(element){
+        this.element = element;
+        this.initialized = true;
+    }
+
+    static start(){
+        if(!this.initialized) throw new Error("GlobalTimer not Initialized")
+        if(this.#startTime == null) this.#startTime = Date.now()
+        else this.#startTime += Date.now() - this.#lastStoppedTime
+        
+        this.intervalID = setInterval(()=>{
+            this.currentTime = Date.now() - this.#startTime;
+
+            this.updateElementText(Timer.formatTime(this.currentTime))
+        },this.intervalTime)
+    }
+
+    static updateElementText(string){
+        if(!this.initialized) throw new Error("GlobalTimer not Initialized")
+
+        this.element.innerHTML = string;
+    }
+
+    static stop(){
+        clearInterval(this.intervalID)
+        this.#lastStoppedTime = Date.now()
+    }
+
+    static reset(){
+        this.stop()
+        this.#startTime = null;
+        this.currentTime = 0;
+        this.start()
+    }
+}
+
+const timerElement = document.getElementById("timerText");
+GlobalTimer.init(timerElement);

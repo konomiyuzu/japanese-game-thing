@@ -2,6 +2,7 @@
     position: absolute;
     top:1vh;
     right:1vw;
+    z-index: -1;
 
     user-select: none;
 }
@@ -9,17 +10,13 @@
 .questionBox{
     width: 200px;
     height: 200px;
-
-    border-radius: 5px;
-    border: solid grey 2px;
-
-    background-color: #fff;
 }
 
 .questionText{
     font-size: 30px;
     user-select: none;
 }
+
 .gameButtonsContainer{
     margin-top:30px;
     display: flex;
@@ -32,13 +29,8 @@
     height: 50px;
     margin:5px;
 
-    border-radius: 5px;
-    border: solid grey 2px;
-
     font-size: 40px;
     user-select: none;
-
-    background-color: white;
 
     cursor: pointer;
     transition: all .2s ease-in-out;
@@ -49,20 +41,10 @@
     color:#5280ff;
 }
 
-.dim-screen{
-    position: absolute;
-    top:0;
-    bottom:0;
-    right:0;
-
-    background-color:black;
-    opacity: 0.8;
-
-    width: 100vw;
-    height: 100vh;
-
+.countdownText{
     color:white;
     font-size: 100px;
     font-weight: bold;
     text-shadow: 0px 0px 5px white;
+    user-select: none;
 }
