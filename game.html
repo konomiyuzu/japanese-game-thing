@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <div class="dim-screen countdownText flex-container center-horizontal center-vertical" id="dim"></div>
+    <div class="dim-screen countdownText flex-container center-horizontal center-vertical" style="display:flex;" id="warmupScreen"></div>
 
     <div class="dim-screen flex-container center-horizontal center-vertical" style="display: none;" id="results">
         <div class="results-box box">
@@ -21,8 +21,6 @@
             <div class="results-text-container flex-container">
                 <p id="resultsTime" class="results-text"></p>
                 <p id="resultsScore" class="results-text"></p>
-                <p id="resultsAccuracy" class="results-text"></p>
-                <p id="resultsPoints" class="results-text"></p>
 
                 <br>
                 <p id="showResults" class="results-show results-text">show detailed results</p>
@@ -37,7 +35,7 @@
 
     <div class="flex-container center-horizontal">
         <div class="progress">
-            <p id="progress"></p>
+            <p id="questionNumber"></p>
         </div>
     </div>
 
@@ -76,6 +74,10 @@
             <p name="chosenText"></p>
         </div>
     </div>
+</template>
+
+<template id="choiceButtonTemplate">
+    <div class="gameButton box flex-container center-horizontal center-vertical"></div>
 </template>
 
 <script src="js/dataLoader.js"></script>

@@ -1,45 +1,24 @@
+
 class ResultsHandler {
-    constructor(
-        templateElement,
-        resultsScreenElement,
-        resultsContainer,
-        showDetailedButton,
-        resultsTimeText,
-        resultsScoreText,
-        resultsAccuracyText,
-        resultsPointsText
-    ) {
-        this.template = templateElement;
-        this.resultsScreenElement = resultsScreenElement;
-        this.resultsContainer = resultsContainer;
-        this.showDetailedButton = showDetailedButton;
-        this.resultsTimeText = resultsTimeText;
-        this.resultsScoreText = resultsScoreText;
-        this.resultsAccuracyText = resultsAccuracyText;
-        
-        //difference between points and score is score is just correctAnswers/totalQuestions while
-        //points are calculated with the accuracy and the time with faster times and higher accuracy meaning higher scores
-        //they should be calculated externally
-        this.resultsPointsText = resultsPointsText;
-
-        this.results = [];
-        this.showDetailedResults = false;
-        this.score = 0;
-        this.scoreMax = 0;
-        this.accuracyString = "0.00%";
-        this.points = 0;
-        this.timeString = "00:00:000";
-
-        this.init();
+    static elements;
+    static initiated = false;
+    static results = [];
+    static showDetailedResults = false
+    static data = {
+        score: 0,
+        scoreMax: 0,
+        timeString: "00:00:000"
     }
 
-    init(){
-        this.showDetailedButton.addEventListener("click", this.toggleDetailedResults.bind(this));
+    static init(elements) {
+        this.elements = elements;
+        this.elements.showDetailedButton.addEventListener("click", this.toggleDetailedResults.bind(this));
+        this.initiated = true;
     }
-    
 
-    #createResult(questionText, correctText, chosenText, answerIsCorrect) {
-        let result = this.template.content.cloneNode(true);
+
+    static #createResult(questionText, correctText, chosenText, answerIsCorrect) {
+        let result = this.elements.templateElement.content.cloneNode(true);
 
         //cloneNode() returns a document fragment,
         //this gets the node from the docfrag
@@ -63,46 +42,55 @@ class ResultsHandler {
         return resultElement;
     }
 
-    addResult(questionText, correctText, chosenText, answerIsCorrect) {
+    static addResult(questionText, correctText, chosenText, answerIsCorrect) {
+        if (!this.initiated) throw new Error("ResultHandler not initialized");
+
         let result = this.#createResult(questionText, correctText, chosenText, answerIsCorrect);
-        this.resultsContainer.appendChild(result);
+        this.elements.resultsContainer.appendChild(result);
         this.results.push(result);
     }
 
-    removeResult(index) {
+    static removeResult(index) {
+        if (!this.initiated) throw new Error("ResultHandler not initialized");
+
         let result = this.results[index];
 
         if (result == null) throw new Error(`result does not exist at index: ${index}`)
-        console.log(this.results.length);
         this.results.splice(index, 1);
         result.remove();
     }
 
-    showResultsScreen() {
-        this.updateText() 
-        this.resultsScreenElement.setAttribute("style", "display:flex;")
+    static showResultsScreen() {
+        if (!this.initiated) throw new Error("ResultHandler not initialized");
+
+        this.updateText()
+        this.elements.resultsScreenElement.setAttribute("style", "display:flex;")
     }
 
-    hideResultsScreen() {
-        this.resultsScreenElement.setAttribute("style", "display:none;")
+    static hideResultsScreen() {
+        if (!this.initiated) throw new Error("ResultHandler not initialized");
+
+        this.elements.resultsScreenElement.setAttribute("style", "display:none;")
     }
 
-    updateText() {
-        this.resultsTimeText.innerHTML = `time: ${this.timeString}`
-        this.resultsScoreText.innerHTML = `score: ${this.score}/${this.scoreMax}`
-        this.resultsAccuracyText.innerHTML = `accuracy: ${this.accuracyString}`
-        this.resultsPointsText.innerHTML = `points: ${this.points}`
+    static updateText() {
+        if (!this.initiated) throw new Error("ResultHandler not initialized");
+
+        this.elements.resultsTimeText.innerHTML = `time: ${this.data.timeString}`
+        this.elements.resultsScoreText.innerHTML = `score: ${this.data.score}/${this.data.scoreMax}`
     }
 
-    toggleDetailedResults() {
+    static toggleDetailedResults() {
+        if (!this.initiated) throw new Error("ResultHandler not initialized");
+
         if (this.showDetailedResults) {
-            this.resultsContainer.setAttribute("style", "display:none;")
+            this.elements.resultsContainer.setAttribute("style", "display:none;")
             this.showDetailedResults = false;
-            this.showDetailedButton.innerHTML = "show detailed results";
+            this.elements.showDetailedButton.innerHTML = "show detailed results";
         } else {
-            this.resultsContainer.setAttribute("style", "display:flex;")
+            this.elements.resultsContainer.setAttribute("style", "display:flex;")
             this.showDetailedResults = true;
-            this.showDetailedButton.innerHTML = "hide detailed results";
+            this.elements.showDetailedButton.innerHTML = "hide detailed results";
         }
     }
 
@@ -113,16 +101,13 @@ const resultsContainerElement = document.getElementById("resultsContainer");
 const showDetailedButtonElement = document.getElementById("showResults");
 const resultsTimeText = document.getElementById("resultsTime");
 const resultsScoreText = document.getElementById("resultsScore");
-const resultsAccuracyText = document.getElementById("resultsAccuracy")
-const resultsPointsText = document.getElementById("resultsPoints")
 
-const resultsHandler = new ResultsHandler(
-    resultTemplate,
-    resultsScreenElement,
-    resultsContainerElement,
-    showDetailedButtonElement,
-    resultsTimeText,
-    resultsScoreText,
-    resultsAccuracyText,
-    resultsPointsText
-)
+const resultHandlerElements = {
+    templateElement: resultTemplate,
+    resultsScreenElement: resultsScreenElement,
+    resultsContainer: resultsContainerElement,
+    showDetailedButton: showDetailedButtonElement,
+    resultsTimeText: resultsTimeText,
+    resultsScoreText: resultsScoreText,
+}
+ResultsHandler.init(resultHandlerElements)
