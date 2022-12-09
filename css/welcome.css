@@ -27,3 +27,30 @@
     color: #5280ff;
     transform: scale(1.1);
 }
+
+.settings-box{
+    width: 25vw;
+
+    flex-flow: column;
+}
+
+.settings-header-text{
+    font-size: 30px;
+    text-align: center;
+}
+
+.setting-text-input{
+    width: 5vw;
+    height:2vh;
+    margin:5px;
+}
+.setting{
+    padding: 5px;
+
+    flex-flow: column;
+}
+
+.settings-error{
+    color:red;
+    break-after:column;
+}

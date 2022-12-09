@@ -22,6 +22,24 @@
         </a>
     </div>
 
+    <h1 class="settings-header-text">Settings</h1>
+    <div class="flex-container center-horizontal">
+        <div class="box settings-box flex-container" id="settingsContainer">
+
+        </div>
+    </div>
 </body>
-<script src="js/dataLoader.js"></script>
+<script src="js/dataLoader.js" defer></script>
+<script src="js/settingsHandler.js" defer></script>
+
+<template id="settingElementTemplate">
+    <div class="setting flex-container center-horizontal">
+        <div class="flex-container center-vertical">
+            <h3 class="setting-text" name="settingText"></h3>
+            <input class="setting-text-input" name="settingInput">
+        </div>
+        <p class="settings-error" name="settingError"></p>
+    </div>
+</template>
+
 </html>
