@@ -2,17 +2,18 @@ class SettingsElement {
     static initialized = false;
     static template;
 
-    constructor(mainText, textOnHover, id){
-        if(!SettingsElement.initialized) throw new Error("SettingsElement not initialized")
+    constructor(mainText, textOnHover, id) {
+        if (!SettingsElement.initialized) throw new Error("SettingsElement not initialized")
 
         let elements = this.#createElement(mainText, textOnHover, id)
 
+        this.type = "text";
         this.element = elements.element;
         this.input = elements.input;
         this.error = elements.error;
     }
 
-    #createElement(mainText, textOnHover, id){
+    #createElement(mainText, textOnHover, id) {
         let element = SettingsElement.template.content.cloneNode(true).firstElementChild;
 
         element.title = textOnHover;
@@ -27,15 +28,48 @@ class SettingsElement {
         errorElement.id = `${id}-error`;
 
         return {
-            element:element,
-            input:inputElement,
-            error:errorElement
+            element: element,
+            input: inputElement,
+            error: errorElement
         };
     }
 
-    static init(template){
+    changeInputType(type){
+        this.type = type;
+        this.input.type = type;
+    }
+
+    //typename being what to internally call it (i.e dropdown)
+    changeInputElement(elementName,typeName){
+        this.type = typeName;
+
+        let element = document.createElement(elementName);
+        element.classList = this.input.classList;
+        element.id = this.input.id;
+        this.input.parentNode.replaceChild(element,this.input);
+
+        this.input = element;
+    }
+
+    static init(template) {
         this.template = template
         this.initialized = true;
+    }
+}
+
+class SettingsElementDropdown extends SettingsElement {
+    constructor(mainText, textOnHover, id){
+        super(mainText, textOnHover, id)
+        this.changeInputElement("select","dropdown")
+    }
+
+    addChoice(value,displayText){
+        let element = document.createElement("option");
+
+        element.value = value;
+        element.innerHTML = displayText;
+
+        this.input.appendChild(element);
     }
 }
 
@@ -50,15 +84,37 @@ class SettingsHandler {
     static initialized = false;
     static activeGamePack;
 
-    static init(elements, settingsContainer) {
+    static async init(elements, settingsContainer) {
         this.elements = elements;
         this.settingsContainer = settingsContainer;
 
-        for(let element of elements){
-            element.input.addEventListener("change", this.checkValidity.bind(this))
+        const gamePacks = await this.getGamePacks();
+
+        for (let element of elements) {
+            if(element.type == "text") element.input.addEventListener("change", this.checkValidity.bind(this))
+            if(element.type == "dropdown"){
+                for (let i = 0; i < gamePacks.length; i++){
+                    const gamePack = gamePacks[i];
+                    element.addChoice(i,gamePack.name)
+                }
+            }
             settingsContainer.appendChild(element.element)
         }
+
+
+        
         this.initialized = true;
+    }
+
+    static async getGamePacks(){
+        let names = await this.fetchJson("./built in gamePacks/names.json");
+        
+        let out = [];
+        for(let name of names.names){
+            out.push(await this.fetchJson(`./built in gamePacks/${name}`))
+        }
+
+        return out
     }
 
     static async fetchJson(file) {
@@ -66,7 +122,6 @@ class SettingsHandler {
         return await response.json()
     }
 
-    //todo put this in the settingsElement itself
     static checkValidity(event) {
 
         let valid
@@ -85,33 +140,38 @@ class SettingsHandler {
                 break;
         }
 
-        if(valid.valid == false){
-            this.pushError(id,valid.errorMessage)
+        if (valid.valid == false) {
+            this.pushError(id, valid.errorMessage)
         } else this.clearError(id)
     }
 
-    static updateError(id,str){
+    static updateError(id, str) {
         document.getElementById(`${id}-error`).innerHTML = str
     }
 
     //takes in the id without the -error
-    static pushError(id,error){
-        this.updateError(id,"* " + error)
+    static pushError(id, error) {
+        this.updateError(id, "* " + error)
     }
 
-    static clearError(id){
-        this.updateError(id,"")
+    static clearError(id) {
+        this.updateError(id, "")
     }
 
     static checkValidityTotalChoice(value) {
         let valid = true;
         let out = {}
 
-        //only condtion is be smaller than the smallest answer pool and not be > 1
-        if(value > this.getMinLength()){
+        //must only be numbers
+        if (/[^-\d]/g.test(value)) {
+            valid = false;
+            out.errorMessage = "Setting must only contain numbers"
+        }
+        //the condtion is be smaller than the smallest answer pool and not be > 1
+        else if (value > this.getMinLength()) {
             valid = false;
             out.errorMessage = "Chosen gamepack does not have enough choices"
-        } else if(value <= 1){  
+        } else if (value <= 1) {
             valid = false;
             out.errorMessage = "Total choices cannot be less than 2"
         }
@@ -123,7 +183,12 @@ class SettingsHandler {
         let valid = true;
         let out = {};
 
-        if(value <= 0){
+        //must only be numbers
+        if (/[^-\d]/g.test(value)) {
+            valid = false;
+            out.errorMessage = "Setting must only contain numbers"
+        }
+        else if (value <= 0) {
             valid = false;
             out.errorMessage = "Total questions cannot be less than 1"
         }
@@ -136,7 +201,12 @@ class SettingsHandler {
         let valid = true;
         let out = {};
 
-        if(value < 0){
+        //must only be numbers
+        if (/[^-\d]/g.test(value)) {
+            valid = false;
+            out.errorMessage = "Setting must only contain numbers"
+        }
+        else if (value < 0) {
             valid = false;
             out.errorMessage = "Question cooldown cannot be less than 0"
         }
@@ -157,18 +227,19 @@ SettingsElement.init(settingElementTemplate);
 
 const settingsElements = [];
 
-settingsElements.push(new SettingsElement("Choices per Question:","Total choices to display per question (integer)","totalChoices"))
-settingsElements.push(new SettingsElement("Total Questions:","Total questions per game (integer)","totalQuestions"))
-settingsElements.push(new SettingsElement("Question Cooldown:","how many rounds to wait before a previously picked question is allowed to be reused (integer)","questionBlacklist"))
+settingsElements.push(new SettingsElement("Choices per Question:", "Total choices to display per question (integer)", "totalChoices"))
+settingsElements.push(new SettingsElement("Total Questions:", "Total questions per game (integer)", "totalQuestions"))
+settingsElements.push(new SettingsElement("Question Cooldown:", "how many rounds to wait before a previously picked question is allowed to be reused (integer)", "questionBlacklist"))
+settingsElements.push(new SettingsElementDropdown("Game Pack:", "what set of questions and answers to use", "gamePack"))
 
 const settingsContainer = document.getElementById("settingsContainer")
-SettingsHandler.init(settingsElements,settingsContainer);
+SettingsHandler.init(settingsElements, settingsContainer);
 
 //for testing
 SettingsHandler.activeGamePack = {
     "answerPools": [
         {
-            "id":0,
+            "id": 0,
             "pool": [
                 "a",
                 "i",
@@ -178,7 +249,7 @@ SettingsHandler.activeGamePack = {
             ]
         },
         {
-            "id":1,
+            "id": 1,
             "pool": [
                 "あ",
                 "い",
@@ -188,56 +259,56 @@ SettingsHandler.activeGamePack = {
             ]
         }
     ],
-    "questionPools":[
+    "questionPools": [
         {
-            "id":0,
-            "answerPoolId":0,
-            "pool":[
+            "id": 0,
+            "answerPoolId": 0,
+            "pool": [
                 {
-                    "question":"あ",
-                    "answer":"a"
+                    "question": "あ",
+                    "answer": "a"
                 },
                 {
-                    "question":"い",
-                    "answer":"i"
+                    "question": "い",
+                    "answer": "i"
                 },
                 {
-                    "question":"う",
-                    "answer":"u"
+                    "question": "う",
+                    "answer": "u"
                 },
                 {
-                    "question":"え",
-                    "answer":"e"
+                    "question": "え",
+                    "answer": "e"
                 },
                 {
-                    "question":"お",
-                    "answer":"o"
+                    "question": "お",
+                    "answer": "o"
                 }
             ]
         },
         {
-            "id":1,
-            "answerPoolId":1,
-            "pool":[
+            "id": 1,
+            "answerPoolId": 1,
+            "pool": [
                 {
-                    "question":"a",
-                    "answer":"あ"
+                    "question": "a",
+                    "answer": "あ"
                 },
                 {
-                    "question":"i",
-                    "answer":"い"
+                    "question": "i",
+                    "answer": "い"
                 },
                 {
-                    "question":"u",
-                    "answer":"う"
+                    "question": "u",
+                    "answer": "う"
                 },
                 {
-                    "question":"e",
-                    "answer":"え"
+                    "question": "e",
+                    "answer": "え"
                 },
                 {
-                    "question":"o",
-                    "answer":"お"
+                    "question": "o",
+                    "answer": "お"
                 }
             ]
         }

@@ -11,11 +11,17 @@ class GamePack {
     }
 
     getAnswerPoolById(id) {
-        return this.answerPools.filter(pool => pool.id == id)[0];
+        let out = this.answerPools.filter(pool => pool.id == id)[0];
+
+        if(out == null) throw new Error(`Answer Pool with Id ${id} not found`);
+        return out;
     }
 
     getQuestionPoolById(id) {
-        return this.questionPools.filter(pool => pool.id == id)[0];
+        let out = this.questionPools.filter(pool => pool.id == id)[0];
+
+        if(out == null) throw new Error(`Question Pool with Id ${id} not found`);
+        return out;
     }
 }
 
@@ -74,7 +80,7 @@ class Game {
         score: 0,
         currentQuestionNumber: 0,
         rounds: [],
-        questionBlackList:[],
+        questionBlackList: [],
     };
     static questionBlackListDelay;
 
@@ -129,7 +135,7 @@ class Game {
 
     static endGame() {
         if (!this.initialized) throw new Error("Game not initialized");
-        
+
         //since the way its setup it isnt ran if a new question isnt generated;
         //and im too lazy to change it
         this.updateQuestionNumber();
@@ -169,14 +175,14 @@ class Game {
         //blacklisting logic
 
         //+1 since this is decremented once at initailization
-        if(this.questionBlackListDelay + 1 <= 0){
+        if (this.questionBlackListDelay + 1 <= 0) {
             questionBlackList.shift()
-        } else{
+        } else {
             this.questionBlackListDelay--;
         }
         const questionPool = questionPoolFull.pool.filter(x => {
             return !questionBlackList.map(x => x.question).includes(x.question) &&
-            !questionBlackList.map(x => x.answer).includes(x.answer)
+                !questionBlackList.map(x => x.answer).includes(x.answer)
         })
 
         const question = this.randomElementFromArray(questionPool);
@@ -284,4 +290,4 @@ const gameElements = {
     warmupScreenElement: warmupScreenElement
 }
 Game.init(gameElements)
-.then(() => Game.startGame());
+    .then(() => Game.startGame());
