@@ -93,7 +93,7 @@ class Game {
         this.gamePack = new GamePack(DataLoader.activeGamePack);
         this.generateGameButtons(this.settings.totalChoices);
 
-        this.questionBlackListDelay = this.settings.repeatBlackList;
+        this.questionBlackListDelay = this.settings.questionBlacklist;
     }
 
     static startGame() {

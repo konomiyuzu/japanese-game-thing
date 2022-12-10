@@ -7,7 +7,7 @@ class SettingsElement {
 
         let elements = this.#createElement(mainText, textOnHover, id)
 
-        this.type = "text";
+        this.id = id;
         this.element = elements.element;
         this.input = elements.input;
         this.error = elements.error;
@@ -35,13 +35,10 @@ class SettingsElement {
     }
 
     changeInputType(type){
-        this.type = type;
         this.input.type = type;
     }
 
-    //typename being what to internally call it (i.e dropdown)
-    changeInputElement(elementName,typeName){
-        this.type = typeName;
+    changeInputElement(elementName){
 
         let element = document.createElement(elementName);
         element.classList = this.input.classList;
@@ -73,37 +70,91 @@ class SettingsElementDropdown extends SettingsElement {
     }
 }
 
-// class SettingsElementText extends SettingsElement{
-//     text
-// }
-
 class SettingsHandler {
 
     static elements;
-    static settingsContainer;
+    static settings;
     static initialized = false;
     static activeGamePack;
+    static gamePacks;
+    static showing = false;
 
-    static async init(elements, settingsContainer) {
+    // elements formatted {
+    //     whateverElement:element,
+    //     settingElements:[arrayOfSettingElements]
+    // }
+    static async init(elements) {
         this.elements = elements;
-        this.settingsContainer = settingsContainer;
 
-        const gamePacks = await this.getGamePacks();
+        this.gamePacks = await this.getGamePacks();
 
-        for (let element of elements) {
-            if(element.type == "text") element.input.addEventListener("change", this.checkValidity.bind(this))
-            if(element.type == "dropdown"){
-                for (let i = 0; i < gamePacks.length; i++){
-                    const gamePack = gamePacks[i];
-                    element.addChoice(i,gamePack.name)
-                }
+        for (let settingElements of this.elements.settings) {
+
+            //for initing each type of inputs
+            switch(settingElements.id){
+                case "gamePack":
+                    for (let i = 0; i < this.gamePacks.length; i++){
+                        const gamePack = this.gamePacks[i];
+                        settingElements.addChoice(i,gamePack.name)
+                    }
+                break;
+                default:
+                    settingElements.input.addEventListener("change", this.checkValidity.bind(this))
+                break;
             }
-            settingsContainer.appendChild(element.element)
+
+            this.elements.settingsContainer.appendChild(settingElements.element)
         }
 
-
+        this.elements.settingsButton.addEventListener("click", this.toggleSettingsBox.bind(this))
         
+        this.settings = await this.loadLocalSettings();
+        this.updateInputs();
+
         this.initialized = true;
+    }
+
+    static async loadLocalSettings(){
+        localStorage.clear()
+        let settings = localStorage.getItem("settings");
+        
+        if(settings == null) {
+            settings = await this.fetchJson("./jsons/settings-default.json");
+            this.setLocalSettings(settings)
+        } else settings = JSON.parse(settings);
+
+        return settings;
+    }
+
+    static updateInputs(){
+        const settings = this.settings;
+        for(let settingElement of this.elements.settings){
+            switch(settingElement.id){
+                case "totalChoices":
+                    settingElement.input.value = settings.totalChoices;
+                break;
+                case "totalQuestions":
+                    settingElement.input.value = settings.totalQuestions;
+                break;
+                case "questionBlacklist":
+                    settingElement.input.value = settings.questionBlacklist;
+                break;
+            }
+        }
+    }
+
+    static setLocalSettings(settings = this.settings){
+        localStorage.setItem("settings",JSON.stringify(settings))
+    }
+
+    static toggleSettingsBox(){
+        if(this.showing){
+            Fade.fadeOut(0.5,this.elements.settingsContainer)
+            this.showing = false;
+        } else {
+            Fade.fadeIn(0.5,this.elements.settingsContainer,"flex")
+            this.showing = true;
+        }
     }
 
     static async getGamePacks(){
@@ -225,15 +276,18 @@ const settingElementTemplate = document.getElementById("settingElementTemplate")
 SettingsElement.init(settingElementTemplate);
 
 
-const settingsElements = [];
+const settingsElements = {};
+const settings = []
+settings.push(new SettingsElement("Choices per Question:", "Total choices to display per question (integer)", "totalChoices"))
+settings.push(new SettingsElement("Total Questions:", "Total questions per game (integer)", "totalQuestions"))
+settings.push(new SettingsElement("Question Cooldown:", "how many rounds to wait before a previously picked question is allowed to be reused (integer)", "questionBlacklist"))
+settings.push(new SettingsElementDropdown("Game Pack:", "what set of questions and answers to use", "gamePack"))
 
-settingsElements.push(new SettingsElement("Choices per Question:", "Total choices to display per question (integer)", "totalChoices"))
-settingsElements.push(new SettingsElement("Total Questions:", "Total questions per game (integer)", "totalQuestions"))
-settingsElements.push(new SettingsElement("Question Cooldown:", "how many rounds to wait before a previously picked question is allowed to be reused (integer)", "questionBlacklist"))
-settingsElements.push(new SettingsElementDropdown("Game Pack:", "what set of questions and answers to use", "gamePack"))
+settingsElements.settingsContainer = document.getElementById("settingsContainer")
+settingsElements.settingsButton = document.getElementById("settingsButton")
+settingsElements.settings = settings;
 
-const settingsContainer = document.getElementById("settingsContainer")
-SettingsHandler.init(settingsElements, settingsContainer);
+SettingsHandler.init(settingsElements);
 
 //for testing
 SettingsHandler.activeGamePack = {

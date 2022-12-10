@@ -44,8 +44,3 @@ body {
     width: 100vw;
     height: 100vh;
 }
-
-.flex-break {
-    flex-basis: 100%;
-    height: 0;
-}
