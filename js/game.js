@@ -1,9 +1,3 @@
-//TODO rewrite this entire file as a class
-//get rid of settings.x and replace with constants
-
-
-//for debugging, remove later
-localStorage.clear()
 class GamePack {
     constructor(gamepack) {
         this.answerPools = gamepack.answerPools.map(pool => new Pool(pool));
@@ -88,9 +82,8 @@ class Game {
         this.elements = elements;
         this.initialized = true;
 
-        await DataLoader.init();
         this.settings = JSON.parse(localStorage.getItem("settings"));
-        this.gamePack = new GamePack(DataLoader.activeGamePack);
+        this.gamePack = new GamePack(JSON.parse(localStorage.getItem("activeGamePack")));
         this.generateGameButtons(this.settings.totalChoices);
 
         this.questionBlackListDelay = this.settings.questionBlacklist;
