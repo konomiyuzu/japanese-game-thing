@@ -81,7 +81,7 @@ class SettingsHandler {
 
     // elements formatted {
     //     whateverElement:element,
-    //     settingElements:[arrayOfSettingElements]
+    //     settings:[arrayOfSettingElements]
     // }
     static async init(elements) {
         this.elements = elements;
@@ -97,9 +97,12 @@ class SettingsHandler {
                         const gamePack = this.gamePacks[i];
                         settingElements.addChoice(i,gamePack.name)
                     }
+
+                    settingElements.input.addEventListener("change", this.updateGamePack.bind(this))
                 break;
                 default:
-                    settingElements.input.addEventListener("change", this.checkValidity.bind(this))
+                    settingElements.input.addEventListener("change", this.updateSettings.bind(this));
+                    settingElements.input.addEventListener("focusout", this.updateInputs.bind(this));
                 break;
             }
 
@@ -109,13 +112,18 @@ class SettingsHandler {
         this.elements.settingsButton.addEventListener("click", this.toggleSettingsBox.bind(this))
         
         this.settings = await this.loadLocalSettings();
+        this.activeGamePack = this.loadLocalActiveGamepack();
         this.updateInputs();
 
         this.initialized = true;
     }
 
+    static updateGamePack(event){
+        this.activeGamePack = this.gamePacks[event.target.value]
+        this.setLocalActiveGamepack();
+    }
+
     static async loadLocalSettings(){
-        localStorage.clear()
         let settings = localStorage.getItem("settings");
         
         if(settings == null) {
@@ -124,6 +132,25 @@ class SettingsHandler {
         } else settings = JSON.parse(settings);
 
         return settings;
+    }
+
+    static loadLocalActiveGamepack(){
+        let activeGamePack = localStorage.getItem("activeGamePack");
+
+        if(activeGamePack == null){
+            activeGamePack = this.gamePacks[0];
+            this.setLocalActiveGamepack(activeGamePack);
+        } else activeGamePack = JSON.parse(activeGamePack);
+
+        return activeGamePack;
+    }
+
+    static setLocalActiveGamepack(activeGamePack = this.activeGamePack){
+        localStorage.setItem("activeGamePack",JSON.stringify(activeGamePack));
+    }
+    
+    static setLocalSettings(settings = this.settings){
+        localStorage.setItem("settings",JSON.stringify(settings))
     }
 
     static updateInputs(){
@@ -139,12 +166,20 @@ class SettingsHandler {
                 case "questionBlacklist":
                     settingElement.input.value = settings.questionBlacklist;
                 break;
+                case "gamePack":
+                    const options =  settingElement.input.options;
+                    for (let i = 0; i < options.length; i++){
+                        let option = options[i]
+                        if(option.innerHTML == this.activeGamePack.name){
+                            settingElement.input.selectedIndex = i;
+                            break;
+                        }
+                    }
+                break;
             }
         }
-    }
 
-    static setLocalSettings(settings = this.settings){
-        localStorage.setItem("settings",JSON.stringify(settings))
+        this.clearErrorAll();
     }
 
     static toggleSettingsBox(){
@@ -173,11 +208,24 @@ class SettingsHandler {
         return await response.json()
     }
 
-    static checkValidity(event) {
+    static updateSettings(event){
+        const id = event.target.id;
+        const value = event.target.value;
+        const valid = this.checkValidity(id, value);
+
+        if (valid.valid == false) {
+            this.pushError(id, valid.errorMessage)
+        } else {
+            this.clearError(id)
+            this.settings[id] = value;
+            this.setLocalSettings();
+        }
+        
+    }
+
+    static checkValidity(id, value) {
 
         let valid
-        const id = event.target.id
-        const value = event.target.value
 
         switch (id) {
             case "totalChoices":
@@ -191,9 +239,7 @@ class SettingsHandler {
                 break;
         }
 
-        if (valid.valid == false) {
-            this.pushError(id, valid.errorMessage)
-        } else this.clearError(id)
+        return valid;
     }
 
     static updateError(id, str) {
@@ -207,6 +253,10 @@ class SettingsHandler {
 
     static clearError(id) {
         this.updateError(id, "")
+    }
+
+    static clearErrorAll() {
+        this.elements.settings.forEach(x => this.clearError(x.id));
     }
 
     static checkValidityTotalChoice(value) {
@@ -288,83 +338,3 @@ settingsElements.settingsButton = document.getElementById("settingsButton")
 settingsElements.settings = settings;
 
 SettingsHandler.init(settingsElements);
-
-//for testing
-SettingsHandler.activeGamePack = {
-    "answerPools": [
-        {
-            "id": 0,
-            "pool": [
-                "a",
-                "i",
-                "u",
-                "e",
-                "o"
-            ]
-        },
-        {
-            "id": 1,
-            "pool": [
-                "あ",
-                "い",
-                "う",
-                "え",
-                "お"
-            ]
-        }
-    ],
-    "questionPools": [
-        {
-            "id": 0,
-            "answerPoolId": 0,
-            "pool": [
-                {
-                    "question": "あ",
-                    "answer": "a"
-                },
-                {
-                    "question": "い",
-                    "answer": "i"
-                },
-                {
-                    "question": "う",
-                    "answer": "u"
-                },
-                {
-                    "question": "え",
-                    "answer": "e"
-                },
-                {
-                    "question": "お",
-                    "answer": "o"
-                }
-            ]
-        },
-        {
-            "id": 1,
-            "answerPoolId": 1,
-            "pool": [
-                {
-                    "question": "a",
-                    "answer": "あ"
-                },
-                {
-                    "question": "i",
-                    "answer": "い"
-                },
-                {
-                    "question": "u",
-                    "answer": "う"
-                },
-                {
-                    "question": "e",
-                    "answer": "え"
-                },
-                {
-                    "question": "o",
-                    "answer": "お"
-                }
-            ]
-        }
-    ]
-}
