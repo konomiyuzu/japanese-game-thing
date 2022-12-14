@@ -123,6 +123,7 @@ class SettingsHandler {
         }
 
         this.elements.settingsButton.addEventListener("click", this.toggleSettingsBox.bind(this))
+        this.elements.settingsResetButton.addEventListener("click", this.resetSettingsToDefault.bind(this))
 
         this.settings = await this.loadLocalSettings();
         this.activeGamePack = this.loadLocalActiveGamepack();
@@ -135,6 +136,13 @@ class SettingsHandler {
     static updateGamePack(event) {
         this.activeGamePack = this.gamePacks[event.target.value]
         this.setLocalActiveGamepack();
+    }
+
+    static resetSettingsToDefault(){
+        this.settings = JsonsHandler.jsons.settingsDefault;
+        this.setLocalSettings(settings);
+
+        this.updateInputs();
     }
 
     static async loadLocalSettings() {
@@ -342,6 +350,7 @@ settings.push(new SettingsElementDropdown("Game Pack:", "what set of questions a
 
 settingsElements.settingsContainer = document.getElementById("settingsContainer")
 settingsElements.settingsButton = document.getElementById("settingsButton")
+settingsElements.settingsResetButton = document.getElementById("settingsResetButton")
 settingsElements.settings = settings;
 
 SettingsHandler.init(settingsElements);
