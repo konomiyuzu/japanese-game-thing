@@ -34,16 +34,16 @@ class SettingsElement {
         };
     }
 
-    changeInputType(type){
+    changeInputType(type) {
         this.input.type = type;
     }
 
-    changeInputElement(elementName){
+    changeInputElement(elementName) {
 
         let element = document.createElement(elementName);
         element.classList = this.input.classList;
         element.id = this.input.id;
-        this.input.parentNode.replaceChild(element,this.input);
+        this.input.parentNode.replaceChild(element, this.input);
 
         this.input = element;
     }
@@ -55,12 +55,12 @@ class SettingsElement {
 }
 
 class SettingsElementDropdown extends SettingsElement {
-    constructor(mainText, textOnHover, id){
+    constructor(mainText, textOnHover, id) {
         super(mainText, textOnHover, id)
-        this.changeInputElement("select","dropdown")
+        this.changeInputElement("select")
     }
 
-    addChoice(value,displayText){
+    addChoice(value, displayText) {
         let element = document.createElement("option");
 
         element.value = value;
@@ -83,50 +83,52 @@ class SettingsHandler {
     //     whateverElement:element,
     //     settings:[arrayOfSettingElements]
     // }
-    static async init(elements) {
+    static async init(elements, loadingScreenHandler) {
         this.elements = elements;
+        loadingScreenHandler.start();
 
         this.gamePacks = await this.getGamePacks();
 
         for (let settingElements of this.elements.settings) {
 
             //for initing each type of inputs
-            switch(settingElements.id){
+            switch (settingElements.id) {
                 case "gamePack":
-                    for (let i = 0; i < this.gamePacks.length; i++){
+                    for (let i = 0; i < this.gamePacks.length; i++) {
                         const gamePack = this.gamePacks[i];
-                        settingElements.addChoice(i,gamePack.name)
+                        settingElements.addChoice(i, gamePack.name);
                     }
 
                     settingElements.input.addEventListener("change", this.updateGamePack.bind(this))
-                break;
+                    break;
                 default:
                     settingElements.input.addEventListener("change", this.updateSettings.bind(this));
                     settingElements.input.addEventListener("focusout", this.updateInputs.bind(this));
-                break;
+                    break;
             }
 
             this.elements.settingsContainer.appendChild(settingElements.element)
         }
 
         this.elements.settingsButton.addEventListener("click", this.toggleSettingsBox.bind(this))
-        
+
         this.settings = await this.loadLocalSettings();
         this.activeGamePack = this.loadLocalActiveGamepack();
         this.updateInputs();
 
+        LoadingScreenHandler.stop();
         this.initialized = true;
     }
 
-    static updateGamePack(event){
+    static updateGamePack(event) {
         this.activeGamePack = this.gamePacks[event.target.value]
         this.setLocalActiveGamepack();
     }
 
-    static async loadLocalSettings(){
+    static async loadLocalSettings() {
         let settings = localStorage.getItem("settings");
-        
-        if(settings == null) {
+
+        if (settings == null) {
             settings = await this.fetchJson("./jsons/settings-default.json");
             this.setLocalSettings(settings)
         } else settings = JSON.parse(settings);
@@ -134,10 +136,10 @@ class SettingsHandler {
         return settings;
     }
 
-    static loadLocalActiveGamepack(){
+    static loadLocalActiveGamepack() {
         let activeGamePack = localStorage.getItem("activeGamePack");
 
-        if(activeGamePack == null){
+        if (activeGamePack == null) {
             activeGamePack = this.gamePacks[0];
             this.setLocalActiveGamepack(activeGamePack);
         } else activeGamePack = JSON.parse(activeGamePack);
@@ -145,62 +147,82 @@ class SettingsHandler {
         return activeGamePack;
     }
 
-    static setLocalActiveGamepack(activeGamePack = this.activeGamePack){
-        localStorage.setItem("activeGamePack",JSON.stringify(activeGamePack));
-    }
-    
-    static setLocalSettings(settings = this.settings){
-        localStorage.setItem("settings",JSON.stringify(settings))
+    static setLocalActiveGamepack(activeGamePack = this.activeGamePack) {
+        localStorage.setItem("activeGamePack", JSON.stringify(activeGamePack));
     }
 
-    static updateInputs(){
+    static setLocalSettings(settings = this.settings) {
+        localStorage.setItem("settings", JSON.stringify(settings))
+    }
+
+    static updateInputs() {
         const settings = this.settings;
-        for(let settingElement of this.elements.settings){
-            switch(settingElement.id){
+        for (let settingElement of this.elements.settings) {
+            switch (settingElement.id) {
                 case "totalChoices":
                     settingElement.input.value = settings.totalChoices;
-                break;
+                    break;
                 case "totalQuestions":
                     settingElement.input.value = settings.totalQuestions;
-                break;
+                    break;
                 case "questionBlacklist":
                     settingElement.input.value = settings.questionBlacklist;
-                break;
+                    break;
                 case "gamePack":
-                    const options =  settingElement.input.options;
-                    for (let i = 0; i < options.length; i++){
+                    const options = settingElement.input.options;
+                    for (let i = 0; i < options.length; i++) {
                         let option = options[i]
-                        if(option.innerHTML == this.activeGamePack.name){
+                        if (option.innerHTML == this.activeGamePack.name) {
                             settingElement.input.selectedIndex = i;
                             break;
                         }
                     }
-                break;
+                    break;
             }
         }
 
         this.clearErrorAll();
     }
 
-    static toggleSettingsBox(){
-        if(this.showing){
-            Fade.fadeOut(0.5,this.elements.settingsContainer)
-            this.showing = false;
+    static toggleSettingsBox() {
+        if (this.showing) {
+            try {
+                Fade.fadeOut(0.5, this.elements.settingsContainer)
+                this.showing = false;
+            }
+            catch (e) {
+            }
         } else {
-            Fade.fadeIn(0.5,this.elements.settingsContainer,"flex")
-            this.showing = true;
+            try {
+                Fade.fadeIn(0.5, this.elements.settingsContainer, "flex")
+                this.showing = true;
+            }
+            catch (e) {
+            }
+
         }
     }
 
-    static async getGamePacks(){
+    static async getGamePacks() {
         let names = await this.fetchJson("./built in gamePacks/names.json");
-        
-        let out = [];
-        for(let name of names.names){
-            out.push(await this.fetchJson(`./built in gamePacks/${name}`))
-        }
+        let version = localStorage.getItem("gamePacksVersion");
 
-        return out
+        let gamePacks = localStorage.getItem("gamePacks");
+        if (gamePacks == null || (version != names.version && version != null)) {
+
+
+
+            let out = [];
+            for (let name of names.names) {
+                out.push(await this.fetchJson(`./built in gamePacks/${name}`))
+            }
+
+            localStorage.setItem("gamePacks", JSON.stringify(out));
+            localStorage.setItem("gamePacksVersion", names.version);
+
+            return out;
+        } else return JSON.parse(gamePacks);
+        
     }
 
     static async fetchJson(file) {
@@ -208,7 +230,7 @@ class SettingsHandler {
         return await response.json()
     }
 
-    static updateSettings(event){
+    static updateSettings(event) {
         const id = event.target.id;
         const value = event.target.value;
         const valid = this.checkValidity(id, value);
@@ -220,7 +242,7 @@ class SettingsHandler {
             this.settings[id] = value;
             this.setLocalSettings();
         }
-        
+
     }
 
     static checkValidity(id, value) {
@@ -337,4 +359,4 @@ settingsElements.settingsContainer = document.getElementById("settingsContainer"
 settingsElements.settingsButton = document.getElementById("settingsButton")
 settingsElements.settings = settings;
 
-SettingsHandler.init(settingsElements);
+SettingsHandler.init(settingsElements, LoadingScreenHandler);
