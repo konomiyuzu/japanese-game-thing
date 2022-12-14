@@ -64,13 +64,13 @@ class ResultsHandler {
         if (!this.initiated) throw new Error("ResultHandler not initialized");
 
         this.updateText()
-        Fade.fadeIn(0.5,this.elements.resultsScreenElement,"flex")
+        Fade.fadeIn(0.5, this.elements.resultsScreenElement, "flex")
     }
 
     static hideResultsScreen() {
         if (!this.initiated) throw new Error("ResultHandler not initialized");
 
-        Fade.fadeOut(0.5,this.elements.resultsScreenElement)
+        Fade.fadeOut(0.5, this.elements.resultsScreenElement)
     }
 
     static updateText() {
@@ -84,13 +84,20 @@ class ResultsHandler {
         if (!this.initiated) throw new Error("ResultHandler not initialized");
 
         if (this.showDetailedResults) {
-            Fade.fadeOut(0.5, this.elements.resultsContainer);
-            this.showDetailedResults = false;
-            this.elements.showDetailedButton.innerHTML = "show detailed results";
+            try {
+                Fade.fadeOut(0.5, this.elements.resultsContainer);
+                this.showDetailedResults = false;
+                this.elements.showDetailedButton.innerHTML = "show detailed results";
+            }
+            catch (e) { };
+
         } else {
+            try {
             Fade.fadeIn(0.5, this.elements.resultsContainer, "flex");
             this.showDetailedResults = true;
             this.elements.showDetailedButton.innerHTML = "hide detailed results";
+            }
+            catch (e) { };
         }
     }
 
