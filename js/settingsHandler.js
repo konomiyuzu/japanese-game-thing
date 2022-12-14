@@ -70,6 +70,12 @@ class SettingsElementDropdown extends SettingsElement {
     }
 }
 
+//uses functions from the following classes
+//JsonsHandler
+//LoadingScreenHandler
+//SettingsElement
+
+//be sure to initialize them first
 class SettingsHandler {
 
     static elements;
@@ -83,11 +89,17 @@ class SettingsHandler {
     //     whateverElement:element,
     //     settings:[arrayOfSettingElements]
     // }
-    static async init(elements, loadingScreenHandler) {
-        this.elements = elements;
-        loadingScreenHandler.start();
 
-        this.gamePacks = await this.getGamePacks();
+    //i decided to put the other classes in this init method so that it is clear what other classes
+    //this class uses functions from, idk if its best practice
+    static async init(elements) {
+        this.elements = elements;
+        
+        LoadingScreenHandler.start();
+        await JsonsHandler.init();
+
+        
+        this.gamePacks = JsonsHandler.jsons.gamePacks;
 
         for (let settingElements of this.elements.settings) {
 
@@ -129,7 +141,7 @@ class SettingsHandler {
         let settings = localStorage.getItem("settings");
 
         if (settings == null) {
-            settings = await this.fetchJson("./jsons/settings-default.json");
+            settings = JsonsHandler.jsons.settingsDefault;
             this.setLocalSettings(settings)
         } else settings = JSON.parse(settings);
 
@@ -201,33 +213,6 @@ class SettingsHandler {
             }
 
         }
-    }
-
-    static async getGamePacks() {
-        let names = await this.fetchJson("./built in gamePacks/names.json");
-        let version = localStorage.getItem("gamePacksVersion");
-
-        let gamePacks = localStorage.getItem("gamePacks");
-        if (gamePacks == null || (version != names.version && version != null)) {
-
-
-
-            let out = [];
-            for (let name of names.names) {
-                out.push(await this.fetchJson(`./built in gamePacks/${name}`))
-            }
-
-            localStorage.setItem("gamePacks", JSON.stringify(out));
-            localStorage.setItem("gamePacksVersion", names.version);
-
-            return out;
-        } else return JSON.parse(gamePacks);
-        
-    }
-
-    static async fetchJson(file) {
-        const response = await fetch(file)
-        return await response.json()
     }
 
     static updateSettings(event) {
@@ -359,4 +344,4 @@ settingsElements.settingsContainer = document.getElementById("settingsContainer"
 settingsElements.settingsButton = document.getElementById("settingsButton")
 settingsElements.settings = settings;
 
-SettingsHandler.init(settingsElements, LoadingScreenHandler);
+SettingsHandler.init(settingsElements);

@@ -1,0 +1,2 @@
+this is meant to be ran using node.js after any changes are made to the json files 
+it is done like this so that when fetching it only has to fetch 1 file instead of multiple smaller files (which is slower)
