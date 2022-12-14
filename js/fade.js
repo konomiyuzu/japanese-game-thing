@@ -22,7 +22,6 @@ class Fade {
             if (opacity >= 1) {
                 clearInterval(interval);
                 element.classList.remove("fading");
-
             }
         }, 1000 / 60)
     }
