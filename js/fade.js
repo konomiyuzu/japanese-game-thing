@@ -1,7 +1,7 @@
 class Fade {
 
     static fadeIn(timeSeconds, element, displayType = "block") {
-        //idk if using the classList to store this info is best practice or whatever it works
+        //idk if using the classList to store this info is best practice or whatever but it works
         if (element.classList.contains("fading")) throw new Error("element already fading in/out");
         element.classList.add("fading");
 
@@ -27,7 +27,7 @@ class Fade {
     }
 
     static fadeOut(timeSeconds, element) {
-        //idk if using the classList to store this info is best practice or whatever it works
+        //idk if using the classList to store this info is best practice or whatever but it works
         if (element.classList.contains("fading")) throw new Error("element already fading in/out");
         element.classList.add("fading");
 
