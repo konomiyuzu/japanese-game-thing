@@ -12,6 +12,10 @@
 </head>
 
 <body>
+
+    <div class="dim-screen flex-container center-horizontal center-vertical" id="loadingScreen">
+        <h1 id="loadingScreenText" class="loading-screen-text">Loading</h1>
+    </div>
     <div class="flex-container center-horizontal welcomeText">
         <h1>game text</h1>
     </div>
@@ -31,8 +35,10 @@
     
     <div class="flex-container center-horizontal">
         <div class="box settings-box flex-container fade" id="settingsContainer" style="display: none;">
+        <p id="settingsResetButton" class="settings-reset-button">reset to defaults</p>
 
         </div>
+
     </div>
 </body>
 
@@ -45,7 +51,7 @@
         <p class="settings-error" name="settingError"></p>
     </div>
 </template>
-
+<script src="js/loadingScreenHandler.js"></script>
 <script src="js/fade.js"></script>
 <script src="js/settingsHandler.js" defer></script>
 </html>
