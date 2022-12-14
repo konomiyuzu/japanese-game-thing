@@ -140,7 +140,7 @@ class SettingsHandler {
 
     static resetSettingsToDefault(){
         this.settings = JsonsHandler.jsons.settingsDefault;
-        this.setLocalSettings(settings);
+        this.setLocalSettings(this.settings);
 
         this.updateInputs();
     }
