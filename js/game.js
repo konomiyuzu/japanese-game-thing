@@ -141,6 +141,10 @@ class Game {
         ResultsHandler.data.timeString = Timer.formatTime(GlobalTimer.currentTime);
 
         ResultsHandler.showResultsScreen();
+
+        for(let gameButton of this.elements.gameButtonsContainer.children){
+            gameButton.classList.add("nohover")
+        }
     }
 
     static generateGameButtons(amount) {
