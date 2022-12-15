@@ -58,8 +58,3 @@ class LoadingScreenHandler{
     }
     
 }
-const loadingScreenElements = {};
-loadingScreenElements.loadingScreen = document.getElementById("loadingScreen");
-loadingScreenElements.loadingScreenText = document.getElementById("loadingScreenText");
-
-LoadingScreenHandler.init(loadingScreenElements);

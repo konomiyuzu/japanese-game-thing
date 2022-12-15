@@ -341,21 +341,3 @@ class SettingsHandler {
         return Math.min(... this.activeGamePack.answerPools.map(x => x.pool.length))
     }
 }
-
-const settingElementTemplate = document.getElementById("settingElementTemplate");
-SettingsElement.init(settingElementTemplate);
-
-
-const settingsElements = {};
-const settings = []
-settings.push(new SettingsElement("Choices per Question:", "Total choices to display per question (integer)", "totalChoices"))
-settings.push(new SettingsElement("Total Questions:", "Total questions per game (integer)", "totalQuestions"))
-settings.push(new SettingsElement("Question Cooldown:", "how many rounds to wait before a previously picked question is allowed to be reused (integer)", "questionBlacklist"))
-settings.push(new SettingsElementDropdown("Game Pack:", "what set of questions and answers to use", "gamePack"))
-
-settingsElements.settingsContainer = document.getElementById("settingsContainer")
-settingsElements.settingsButton = document.getElementById("settingsButton")
-settingsElements.settingsResetButton = document.getElementById("settingsResetButton")
-settingsElements.settings = settings;
-
-SettingsHandler.init(settingsElements);

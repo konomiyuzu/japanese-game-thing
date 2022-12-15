@@ -102,19 +102,3 @@ class ResultsHandler {
     }
 
 }
-const resultTemplate = document.getElementById("resultTemplate");
-const resultsScreenElement = document.getElementById("results");
-const resultsContainerElement = document.getElementById("resultsContainer");
-const showDetailedButtonElement = document.getElementById("showResults");
-const resultsTimeText = document.getElementById("resultsTime");
-const resultsScoreText = document.getElementById("resultsScore");
-
-const resultHandlerElements = {
-    templateElement: resultTemplate,
-    resultsScreenElement: resultsScreenElement,
-    resultsContainer: resultsContainerElement,
-    showDetailedButton: showDetailedButtonElement,
-    resultsTimeText: resultsTimeText,
-    resultsScoreText: resultsScoreText,
-}
-ResultsHandler.init(resultHandlerElements)

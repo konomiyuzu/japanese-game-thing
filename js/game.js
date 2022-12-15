@@ -78,7 +78,7 @@ class Game {
     };
     static questionBlackListDelay;
 
-    static async init(elements) {
+    static init(elements) {
         this.elements = elements;
         this.initialized = true;
 
@@ -270,21 +270,3 @@ class Game {
         return Math.floor((Math.random() * (max + 1 - min))) + min;
     }
 }
-
-const gameButtonsContainer = document.getElementById("gameButtonsContainer");
-const choiceButtonTemplate = document.getElementById("choiceButtonTemplate");
-const questionTextElement = document.getElementById("questionText");
-const questionNumberElement = document.getElementById("questionNumber");
-const warmupScreenElement = document.getElementById("warmupScreen");
-
-
-
-const gameElements = {
-    gameButtonsContainer: gameButtonsContainer,
-    choiceButtonTemplate: choiceButtonTemplate,
-    questionTextElement: questionTextElement,
-    questionNumberElement: questionNumberElement,
-    warmupScreenElement: warmupScreenElement
-}
-Game.init(gameElements)
-    .then(() => Game.startGame());

@@ -71,6 +71,3 @@ class GlobalTimer{
         this.start()
     }
 }
-
-const timerElement = document.getElementById("timerText");
-GlobalTimer.init(timerElement);
