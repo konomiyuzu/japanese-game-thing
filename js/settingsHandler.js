@@ -278,9 +278,10 @@ class SettingsHandler {
         }
 
         //must only be numbers
-        if (/[^-\d]/g.test(value)) {
+        //and now also no bs like 10-10 or 5-
+        if (this.isValidInteger(value)) {
             out.valid = false;
-            out.errorMessage = "Setting must only contain numbers"
+            out.errorMessage = "Setting must contain a valid integer"
         }
         //the condtion is be smaller than the smallest answer pool and not be > 1
         else if (value > this.getMinLength()) {
@@ -299,9 +300,10 @@ class SettingsHandler {
         }
 
         //must only be numbers
-        if (/[^-\d]/g.test(value)) {
+        //and now also no bs like 10-10 or 5-
+        if (this.isValidInteger(value)) {
             out.valid = false;
-            out.errorMessage = "Setting must only contain numbers"
+            out.errorMessage = "Setting must contain a valid integer"
         }
         else if (value <= 0) {
             out.valid = false;
@@ -317,9 +319,10 @@ class SettingsHandler {
         }
 
         //must only be numbers
-        if (/[^-\d]/g.test(value)) {
+        //and now also no bs like 10-10 or 5-
+        if (this.isValidInteger(value)) {
             out.valid = false;
-            out.errorMessage = "Setting must only contain numbers"
+            out.errorMessage = "Setting must contain a valid integer"
         }
         else if (value < 0) {
             out.valid = false;
@@ -327,6 +330,10 @@ class SettingsHandler {
         }
 
         return out;
+    }
+
+    static isValidInteger(str){
+        return /[^-\d]|\d+-\d*/g.test(str)
     }
 
 
