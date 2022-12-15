@@ -95,6 +95,18 @@
 
 <!-- initialization -->
 <script defer>
+    //the game can break if nothing is loaded into the locale storage
+    //so at the beginning of the session im just going to send the user to the home screen to garentee that local storage is loaded
+    let initialized = sessionStorage.getItem("initialized")
+
+    //just in case i do == false too even though it should be possible
+    if(initialized == null || initialized == false) {
+        console.warn("session not initalized, sending player to home screen")
+        location.href="./index.html"
+        
+        //throwing to stop code execution although its not 100% necessary
+        throw new Error("session not initalized, sending player to home screen")
+    }
 
     //resultHandler init
     const resultHandlerElements = {}
