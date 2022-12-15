@@ -62,6 +62,10 @@ class Round {
     }
 }
 
+
+//uses functions from the following classes
+//GlobalTimer
+//ResultsHandler
 class Game {
     static #correctAnswerId;
     static elements;

@@ -66,7 +66,7 @@
 
 </body>
 
-<!-- answers -->
+<!-- templates -->
 <template id="resultTemplate">
     <div class="result box flex-container center-vertical">
         <div class="result-questionText-box box flex-container center-horizontal center-vertical">
@@ -99,7 +99,7 @@
     //so at the beginning of the session im just going to send the user to the home screen to garentee that local storage is loaded
     let initialized = sessionStorage.getItem("initialized")
 
-    //just in case i do == false too even though it should be possible
+    //just in case i do == false too even though it should not be possible
     if(initialized == null || initialized == false) {
         console.warn("session not initalized, sending player to home screen")
         location.href="./index.html"
