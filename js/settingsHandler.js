@@ -114,7 +114,7 @@ class SettingsHandler {
                     settingElements.input.addEventListener("change", this.updateGamePack.bind(this))
                     break;
                 default:
-                    settingElements.input.addEventListener("change", this.updateSettings.bind(this));
+                    settingElements.input.addEventListener("change", this.receiveTextSettingChange.bind(this));
                     settingElements.input.addEventListener("focusout", this.updateInputs.bind(this));
                     break;
             }
@@ -143,14 +143,14 @@ class SettingsHandler {
         this.setLocalSettings(this.settings);
 
         this.updateInputs();
+        this.clearErrorAll();
     }
 
     static async loadLocalSettings() {
         let settings = localStorage.getItem("settings");
 
         if (settings == null) {
-            settings = JsonsHandler.jsons.settingsDefault;
-            this.setLocalSettings(settings)
+            this.resetSettingsToDefault();
         } else settings = JSON.parse(settings);
 
         return settings;
@@ -200,8 +200,6 @@ class SettingsHandler {
                     break;
             }
         }
-
-        this.clearErrorAll();
     }
 
     static toggleSettingsBox() {
@@ -223,7 +221,7 @@ class SettingsHandler {
         }
     }
 
-    static updateSettings(event) {
+    static receiveTextSettingChange(event) {
         const id = event.target.id;
         const value = event.target.value;
         const valid = this.checkValidity(id, value);
@@ -275,59 +273,59 @@ class SettingsHandler {
     }
 
     static checkValidityTotalChoice(value) {
-        let valid = true;
-        let out = {}
+        let out = {
+            valid:true
+        }
 
         //must only be numbers
         if (/[^-\d]/g.test(value)) {
-            valid = false;
+            out.valid = false;
             out.errorMessage = "Setting must only contain numbers"
         }
         //the condtion is be smaller than the smallest answer pool and not be > 1
         else if (value > this.getMinLength()) {
-            valid = false;
+            out.valid = false;
             out.errorMessage = "Chosen gamepack does not have enough choices"
         } else if (value <= 1) {
-            valid = false;
+            out.valid = false;
             out.errorMessage = "Total choices cannot be less than 2"
         }
-        out.valid = valid;
         return out;
     }
 
     static checkValidityTotalQuestions(value) {
-        let valid = true;
-        let out = {};
+        let out = {
+            valid:true
+        }
 
         //must only be numbers
         if (/[^-\d]/g.test(value)) {
-            valid = false;
+            out.valid = false;
             out.errorMessage = "Setting must only contain numbers"
         }
         else if (value <= 0) {
-            valid = false;
+            out.valid = false;
             out.errorMessage = "Total questions cannot be less than 1"
         }
 
-        out.valid = valid;
         return out;
     }
 
     static checkValidityQuestionBlacklist(value) {
-        let valid = true;
-        let out = {};
+        let out = {
+            valid:true
+        }
 
         //must only be numbers
         if (/[^-\d]/g.test(value)) {
-            valid = false;
+            out.valid = false;
             out.errorMessage = "Setting must only contain numbers"
         }
         else if (value < 0) {
-            valid = false;
+            out.valid = false;
             out.errorMessage = "Question cooldown cannot be less than 0"
         }
 
-        out.valid = valid;
         return out;
     }
 
