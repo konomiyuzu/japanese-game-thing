@@ -134,14 +134,19 @@ class SettingsHandler {
     }
 
     static updateGamePack(event) {
-        this.activeGamePack = this.gamePacks[event.target.value]
+        this.activeGamePack = this.gamePacks[event.target.value];
         this.setLocalActiveGamepack();
+        return this.activeGamePack;
+    }
+
+    static loadSettingsDefault(){
+        this.settings = JsonsHandler.jsons.settingsDefault;
+        this.setLocalSettings(this.settings);
+        return this.settings;
     }
 
     static resetSettingsToDefault(){
-        this.settings = JsonsHandler.jsons.settingsDefault;
-        this.setLocalSettings(this.settings);
-
+        this.loadSettingsDefault();
         this.updateInputs();
         this.clearErrorAll();
     }
@@ -150,7 +155,7 @@ class SettingsHandler {
         let settings = localStorage.getItem("settings");
 
         if (settings == null) {
-            this.resetSettingsToDefault();
+            settings = this.loadSettingsDefault();
         } else settings = JSON.parse(settings);
 
         return settings;
