@@ -1,4 +1,5 @@
 {
+    "name":"demo2",
     "answerPools": [
         {
             "id":0,
@@ -8,16 +9,6 @@
                 "u",
                 "e",
                 "o"
-            ]
-        },
-        {
-            "id":1,
-            "pool": [
-                "あ",
-                "い",
-                "う",
-                "え",
-                "お"
             ]
         }
     ],
@@ -45,32 +36,6 @@
                 {
                     "question":"お",
                     "answer":"o"
-                }
-            ]
-        },
-        {
-            "id":1,
-            "answerPoolId":1,
-            "pool":[
-                {
-                    "question":"a",
-                    "answer":"あ"
-                },
-                {
-                    "question":"i",
-                    "answer":"い"
-                },
-                {
-                    "question":"u",
-                    "answer":"う"
-                },
-                {
-                    "question":"e",
-                    "answer":"え"
-                },
-                {
-                    "question":"o",
-                    "answer":"お"
                 }
             ]
         }

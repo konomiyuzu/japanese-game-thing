@@ -1,5 +1,5 @@
 {
     "totalChoices":4,
     "totalQuestions":10,
-    "repeatBlackList":2
+    "questionBlacklist":2
 }

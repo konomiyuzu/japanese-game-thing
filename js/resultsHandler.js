@@ -60,17 +60,32 @@ class ResultsHandler {
         result.remove();
     }
 
+    static clearResults(){
+        if (!this.initiated) throw new Error("ResultHandler not initialized");
+
+        let resultsLength = this.results.length;
+        for(let i = 0; i < resultsLength; i++){
+            this.removeResult(0);
+        }
+    }
+
     static showResultsScreen() {
         if (!this.initiated) throw new Error("ResultHandler not initialized");
 
         this.updateText()
-        this.elements.resultsScreenElement.setAttribute("style", "display:flex;")
+        Fade.fadeIn(0.5, this.elements.resultsScreenElement, "flex")
     }
 
     static hideResultsScreen() {
         if (!this.initiated) throw new Error("ResultHandler not initialized");
 
-        this.elements.resultsScreenElement.setAttribute("style", "display:none;")
+        Fade.fadeOut(0.5, this.elements.resultsScreenElement)
+    }
+
+    static hideResultsScreenNoFade() {
+        if (!this.initiated) throw new Error("ResultHandler not initialized");
+
+        this.elements.resultsScreenElement.style.display = "none";
     }
 
     static updateText() {
@@ -84,30 +99,21 @@ class ResultsHandler {
         if (!this.initiated) throw new Error("ResultHandler not initialized");
 
         if (this.showDetailedResults) {
-            this.elements.resultsContainer.setAttribute("style", "display:none;")
-            this.showDetailedResults = false;
-            this.elements.showDetailedButton.innerHTML = "show detailed results";
+            try {
+                Fade.fadeOut(0.5, this.elements.resultsContainer);
+                this.showDetailedResults = false;
+                this.elements.showDetailedButton.innerHTML = "show detailed results";
+            }
+            catch (e) { };
+
         } else {
-            this.elements.resultsContainer.setAttribute("style", "display:flex;")
+            try {
+            Fade.fadeIn(0.5, this.elements.resultsContainer, "flex");
             this.showDetailedResults = true;
             this.elements.showDetailedButton.innerHTML = "hide detailed results";
+            }
+            catch (e) { };
         }
     }
 
 }
-const resultTemplate = document.getElementById("resultTemplate");
-const resultsScreenElement = document.getElementById("results");
-const resultsContainerElement = document.getElementById("resultsContainer");
-const showDetailedButtonElement = document.getElementById("showResults");
-const resultsTimeText = document.getElementById("resultsTime");
-const resultsScoreText = document.getElementById("resultsScore");
-
-const resultHandlerElements = {
-    templateElement: resultTemplate,
-    resultsScreenElement: resultsScreenElement,
-    resultsContainer: resultsContainerElement,
-    showDetailedButton: showDetailedButtonElement,
-    resultsTimeText: resultsTimeText,
-    resultsScoreText: resultsScoreText,
-}
-ResultsHandler.init(resultHandlerElements)

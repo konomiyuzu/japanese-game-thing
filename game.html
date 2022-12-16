@@ -13,8 +13,11 @@
 </head>
 
 <body>
-    <div class="dim-screen countdownText flex-container center-horizontal center-vertical" style="display:flex;" id="warmupScreen"></div>
+    <!-- warmup screen -->
+    <div class="dim-screen countdownText flex-container center-horizontal center-vertical" style="display:flex;"
+        id="warmupScreen"></div>
 
+    <!-- results screen -->
     <div class="dim-screen flex-container center-horizontal center-vertical" style="display: none;" id="results">
         <div class="results-box box">
             <h1 class="results-header-text">Results</h1>
@@ -23,7 +26,10 @@
                 <p id="resultsScore" class="results-text"></p>
 
                 <br>
-                <p id="showResults" class="results-show results-text">show detailed results</p>
+                <p id="restartGame" class="results-button results-text">restart game</p>
+                <p id="mainMenu" class="results-button results-text">return to main menu</p>
+                <br>
+                <p id="showResults" class="results-button results-text">show detailed results</p>
             </div>
             <hr>
             <div class="results-container flex-container center-horizontal" id="resultsContainer" style="display:none;">
@@ -32,6 +38,9 @@
 
         </div>
     </div>
+
+
+    <!-- game elements -->
 
     <div class="flex-container center-horizontal">
         <div class="progress">
@@ -46,7 +55,7 @@
     </div>
 
     <div class="flex-container center-horizontal">
-        <div class="questionBox box flex-container center-horizontal center-vertical">
+        <div class="questionBox box flex-container center-horizontal center-vertical fade-in">
             <div class="questionText">
                 <h1 id="questionText"></h1>
             </div>
@@ -60,6 +69,7 @@
 
 </body>
 
+<!-- templates -->
 <template id="resultTemplate">
     <div class="result box flex-container center-vertical">
         <div class="result-questionText-box box flex-container center-horizontal center-vertical">
@@ -80,9 +90,58 @@
     <div class="gameButton box flex-container center-horizontal center-vertical"></div>
 </template>
 
-<script src="js/dataLoader.js"></script>
-<script src="js/resultsHandler.js" defer></script>
-<script src="js/game.js" defer></script>
+<!-- scripts -->
+<script src="js/fade.js"></script>
+<script src="js/resultsHandler.js"></script>
+<script src="js/game.js"></script>
 <script src="js/timer.js"></script>
+
+<!-- initialization -->
+<script defer>
+    //the game can break if nothing is loaded into the locale storage
+    //so at the beginning of the session im just going to send the user to the home screen to garentee that local storage is loaded
+    let initialized = sessionStorage.getItem("initialized")
+
+    //just in case i do == false too even though it should not be possible
+    if(initialized == null || initialized == false) {
+        console.warn("session not initalized, sending player to home screen")
+        location.href="./index.html"
+        
+        //throwing to stop code execution although its not 100% necessary
+        throw new Error("session not initalized, sending player to home screen")
+    }
+
+    //resultHandler init
+    const resultHandlerElements = {}
+    
+    resultHandlerElements.templateElement = document.getElementById("resultTemplate");
+    resultHandlerElements.resultsScreenElement = document.getElementById("results");
+    resultHandlerElements.resultsContainer = document.getElementById("resultsContainer");
+    resultHandlerElements.showDetailedButton = document.getElementById("showResults");
+    resultHandlerElements.resultsTimeText = document.getElementById("resultsTime");
+    resultHandlerElements.resultsScoreText = document.getElementById("resultsScore");
+
+    ResultsHandler.init(resultHandlerElements)
+
+    //timer init
+    const timerElement = document.getElementById("timerText");
+    GlobalTimer.init(timerElement);
+
+    //game init
+    const gameElements = {}
+    gameElements.gameButtonsContainer = document.getElementById("gameButtonsContainer");
+    gameElements.choiceButtonTemplate = document.getElementById("choiceButtonTemplate");
+    gameElements.questionTextElement = document.getElementById("questionText");
+    gameElements.questionNumberElement = document.getElementById("questionNumber");
+    gameElements.warmupScreenElement = document.getElementById("warmupScreen");
+    gameElements.returnToMainMenuButton = document.getElementById("mainMenu");
+    gameElements.restartGameButton = document.getElementById("restartGame");
+
+    Game.init(gameElements);
+
+    //start game
+    Game.startGame();
+
+</script>
 
 </html>

@@ -1,9 +1,3 @@
-//TODO rewrite this entire file as a class
-//get rid of settings.x and replace with constants
-
-
-//for debugging, remove later
-localStorage.clear()
 class GamePack {
     constructor(gamepack) {
         this.answerPools = gamepack.answerPools.map(pool => new Pool(pool));
@@ -11,11 +5,17 @@ class GamePack {
     }
 
     getAnswerPoolById(id) {
-        return this.answerPools.filter(pool => pool.id == id)[0];
+        let out = this.answerPools.filter(pool => pool.id == id)[0];
+
+        if (out == null) throw new Error(`Answer Pool with Id ${id} not found`);
+        return out;
     }
 
     getQuestionPoolById(id) {
-        return this.questionPools.filter(pool => pool.id == id)[0];
+        let out = this.questionPools.filter(pool => pool.id == id)[0];
+
+        if (out == null) throw new Error(`Question Pool with Id ${id} not found`);
+        return out;
     }
 }
 
@@ -62,6 +62,10 @@ class Round {
     }
 }
 
+
+//uses functions from the following classes
+//GlobalTimer
+//ResultsHandler
 class Game {
     static #correctAnswerId;
     static elements;
@@ -69,34 +73,67 @@ class Game {
 
     static settings;
     static gamePack;
+    static gameIsInProgress = false;
 
     static gameData = {
         score: 0,
         currentQuestionNumber: 0,
         rounds: [],
-        questionBlackList:[],
+        questionBlackList: [],
     };
     static questionBlackListDelay;
 
-    static async init(elements) {
+    static init(elements) {
         this.elements = elements;
         this.initialized = true;
 
-        await DataLoader.init();
+        this.elements.restartGameButton.addEventListener("click", this.restartGame.bind(this));
+        this.elements.returnToMainMenuButton.addEventListener("click", () => {location.href="./index.html"});
+
         this.settings = JSON.parse(localStorage.getItem("settings"));
-        this.gamePack = new GamePack(DataLoader.activeGamePack);
+        this.gamePack = new GamePack(JSON.parse(localStorage.getItem("activeGamePack")));
         this.generateGameButtons(this.settings.totalChoices);
 
-        this.questionBlackListDelay = this.settings.repeatBlackList;
+        this.questionBlackListDelay = this.settings.questionBlacklist;
+    }
+
+    static restartGame() {
+        if (!this.initialized) throw new Error("Game not initialized");
+        if (this.gameIsInProgress) throw new Error("there is still a Game in progress");
+
+        //reset gamedata
+        this.gameData = {
+            score: 0,
+            currentQuestionNumber: 0,
+            rounds: [],
+            questionBlackList: [],
+        };
+        this.questionBlackListDelay = this.settings.questionBlacklist;
+
+        //enable buttons
+        for (let gameButton of this.elements.gameButtonsContainer.children) {
+            gameButton.classList.remove("nohover")
+        }
+
+        ResultsHandler.clearResults();
+        ResultsHandler.hideResultsScreen();
+        GlobalTimer.reset();
+        Fade.fadeIn(0.5, this.elements.warmupScreenElement,"flex")
+
+        this.startGame();
     }
 
     static startGame() {
         if (!this.initialized) throw new Error("Game not initialized");
+        this.gameIsInProgress = true;
+
+        this.updateQuestionNumber();
 
         const warmupScreenElement = this.elements.warmupScreenElement;
         warmupScreenElement.setAttribute("style", "display:flex;")
 
         let n = 3;
+        warmupScreenElement.innerHTML = "";
 
         let interval = setInterval(() => {
             let text = n <= 0 ? "Go!" : n;
@@ -114,6 +151,7 @@ class Game {
 
     }
 
+    //basically adds all the rounds into the results
     static updateResultsRounds() {
 
         for (let round of this.gameData.rounds) {
@@ -129,10 +167,12 @@ class Game {
 
     static endGame() {
         if (!this.initialized) throw new Error("Game not initialized");
-        
+
         //since the way its setup it isnt ran if a new question isnt generated;
         //and im too lazy to change it
         this.updateQuestionNumber();
+
+        this.gameIsInProgress = false;
 
         GlobalTimer.stop();
 
@@ -142,6 +182,11 @@ class Game {
         ResultsHandler.data.timeString = Timer.formatTime(GlobalTimer.currentTime);
 
         ResultsHandler.showResultsScreen();
+
+        //disable buttons
+        for (let gameButton of this.elements.gameButtonsContainer.children) {
+            gameButton.classList.add("nohover")
+        }
     }
 
     static generateGameButtons(amount) {
@@ -168,15 +213,15 @@ class Game {
 
         //blacklisting logic
 
-        //+1 since this is decremented once at initailization
-        if(this.questionBlackListDelay + 1 <= 0){
+        //+1 since this is decremented once for the first question
+        if (this.questionBlackListDelay + 1 <= 0) {
             questionBlackList.shift()
-        } else{
+        } else {
             this.questionBlackListDelay--;
         }
         const questionPool = questionPoolFull.pool.filter(x => {
             return !questionBlackList.map(x => x.question).includes(x.question) &&
-            !questionBlackList.map(x => x.answer).includes(x.answer)
+                !questionBlackList.map(x => x.answer).includes(x.answer)
         })
 
         const question = this.randomElementFromArray(questionPool);
@@ -267,21 +312,3 @@ class Game {
         return Math.floor((Math.random() * (max + 1 - min))) + min;
     }
 }
-
-const gameButtonsContainer = document.getElementById("gameButtonsContainer");
-const choiceButtonTemplate = document.getElementById("choiceButtonTemplate");
-const questionTextElement = document.getElementById("questionText");
-const questionNumberElement = document.getElementById("questionNumber");
-const warmupScreenElement = document.getElementById("warmupScreen");
-
-
-
-const gameElements = {
-    gameButtonsContainer: gameButtonsContainer,
-    choiceButtonTemplate: choiceButtonTemplate,
-    questionTextElement: questionTextElement,
-    questionNumberElement: questionNumberElement,
-    warmupScreenElement: warmupScreenElement
-}
-Game.init(gameElements)
-.then(() => Game.startGame());

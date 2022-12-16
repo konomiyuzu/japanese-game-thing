@@ -64,13 +64,10 @@ class GlobalTimer{
         this.#lastStoppedTime = Date.now()
     }
 
-    static reset(){
+    static reset(restart = false){
         this.stop()
         this.#startTime = null;
         this.currentTime = 0;
-        this.start()
+        if(restart) this.start();
     }
 }
-
-const timerElement = document.getElementById("timerText");
-GlobalTimer.init(timerElement);

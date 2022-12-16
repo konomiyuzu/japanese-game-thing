@@ -1,29 +1,99 @@
-.welcomeText{
+.welcomeText {
     font-size: 30px;
 }
 
-.startButton{
-    height:90px;
-    width:325px;
+.startButton {
+    height: 90px;
+    width: 325px;
     margin: 30px;
 
-    color:black;
+    color: black;
     text-decoration: none;
 
     transition: all .2s ease-in-out;
 }
 
-.startButton:hover{
+.startButton:hover {
     transform: scale(1.1);
 }
 
-.startButton-text{
-    
+.startButton-text {
     user-select: none;
     transition: all .2s ease-in-out;
 }
 
-.startButton:hover>.startButton-text{
+.startButton:hover>.startButton-text {
     color: #5280ff;
     transform: scale(1.1);
+}
+
+.settings-box {
+    flex-flow: column;
+    min-width: 250px;
+    width: 25vw;
+}
+
+.settings-container {
+    flex-flow: column;
+}
+
+.settings-header-button {
+    font-size: 15px;
+    text-align: center;
+
+    padding: 3px;
+    margin: 10px;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition: all .2s ease-in-out;
+
+}
+
+.settings-header-button:hover {
+    transform: scale(1.1);
+    color: #5280ff;
+}
+
+.setting-input {
+    width: 5vw;
+    height: 2vh;
+    margin: 5px;
+}
+
+.setting {
+    padding: 5px;
+
+    flex-flow: column;
+}
+
+.settings-error {
+    color: red;
+    break-after: column;
+}
+
+.settings-reset-button {
+    display:flex;
+    align-self: flex-end;
+    margin: 5px;
+
+    user-select: none;
+    cursor:pointer;
+
+    transition: all .2s ease-in-out
+}
+
+.settings-reset-button:hover {
+    color: #5280ff;
+    transform: scale(1.1);
+}
+
+.loading-screen-text{
+    font-size: 50px;
+    color: white;
+}
+
+.settings-info-text{
+    margin:5px;
 }
