@@ -18,7 +18,6 @@
 }
 
 .startButton-text {
-
     user-select: none;
     transition: all .2s ease-in-out;
 }
@@ -29,8 +28,12 @@
 }
 
 .settings-box {
+    flex-flow: column;
+    min-width: 250px;
     width: 25vw;
+}
 
+.settings-container {
     flex-flow: column;
 }
 
@@ -89,4 +92,8 @@
 .loading-screen-text{
     font-size: 50px;
     color: white;
+}
+
+.settings-info-text{
+    margin:5px;
 }

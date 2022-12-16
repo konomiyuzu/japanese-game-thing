@@ -210,14 +210,14 @@ class SettingsHandler {
     static toggleSettingsBox() {
         if (this.showing) {
             try {
-                Fade.fadeOut(0.5, this.elements.settingsContainer)
+                Fade.fadeOut(0.5, this.elements.settingsBox)
                 this.showing = false;
             }
             catch (e) {
             }
         } else {
             try {
-                Fade.fadeIn(0.5, this.elements.settingsContainer, "flex")
+                Fade.fadeIn(0.5, this.elements.settingsBox, "flex")
                 this.showing = true;
             }
             catch (e) {
