@@ -289,7 +289,7 @@ class SettingsHandler {
             out.errorMessage = "Setting must contain a valid integer"
         }
         //the condtion is be smaller than the smallest answer pool and not be > 1
-        else if (value > this.getMinLength()) {
+        else if (value > this.getMinLength(this.activeGamePack.answerPools)) {
             out.valid = false;
             out.errorMessage = "Chosen gamepack does not have enough choices"
         } else if (value <= 1) {
@@ -333,6 +333,10 @@ class SettingsHandler {
             out.valid = false;
             out.errorMessage = "Question cooldown cannot be less than 0"
         }
+        else if (value > this.getMinLength(this.activeGamePack.questionPools)){
+            out.valid = false;
+            out.errorMessage = "Chosen gamepack does not have enough questions"
+        }
 
         return out;
     }
@@ -342,7 +346,7 @@ class SettingsHandler {
     }
 
 
-    static getMinLength() {
-        return Math.min(... this.activeGamePack.answerPools.map(x => x.pool.length))
+    static getMinLength(pools) {
+        return Math.min(... pools.map(x => x.pool.length))
     }
 }
