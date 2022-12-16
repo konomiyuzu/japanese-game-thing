@@ -60,6 +60,15 @@ class ResultsHandler {
         result.remove();
     }
 
+    static clearResults(){
+        if (!this.initiated) throw new Error("ResultHandler not initialized");
+
+        let resultsLength = this.results.length;
+        for(let i = 0; i < resultsLength; i++){
+            this.removeResult(0);
+        }
+    }
+
     static showResultsScreen() {
         if (!this.initiated) throw new Error("ResultHandler not initialized");
 
@@ -71,6 +80,12 @@ class ResultsHandler {
         if (!this.initiated) throw new Error("ResultHandler not initialized");
 
         Fade.fadeOut(0.5, this.elements.resultsScreenElement)
+    }
+
+    static hideResultsScreenNoFade() {
+        if (!this.initiated) throw new Error("ResultHandler not initialized");
+
+        this.elements.resultsScreenElement.style.display = "none";
     }
 
     static updateText() {

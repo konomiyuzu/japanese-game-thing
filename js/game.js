@@ -7,14 +7,14 @@ class GamePack {
     getAnswerPoolById(id) {
         let out = this.answerPools.filter(pool => pool.id == id)[0];
 
-        if(out == null) throw new Error(`Answer Pool with Id ${id} not found`);
+        if (out == null) throw new Error(`Answer Pool with Id ${id} not found`);
         return out;
     }
 
     getQuestionPoolById(id) {
         let out = this.questionPools.filter(pool => pool.id == id)[0];
 
-        if(out == null) throw new Error(`Question Pool with Id ${id} not found`);
+        if (out == null) throw new Error(`Question Pool with Id ${id} not found`);
         return out;
     }
 }
@@ -73,6 +73,7 @@ class Game {
 
     static settings;
     static gamePack;
+    static gameIsInProgress = false;
 
     static gameData = {
         score: 0,
@@ -93,13 +94,42 @@ class Game {
         this.questionBlackListDelay = this.settings.questionBlacklist;
     }
 
+    static restartGame() {
+        if (!this.initialized) throw new Error("Game not initialized");
+        if (this.gameIsInProgress) throw new Error("there is still a Game in progress");
+
+        //reset gamedata
+        this.gameData = {
+            score: 0,
+            currentQuestionNumber: 0,
+            rounds: [],
+            questionBlackList: [],
+        };
+        this.questionBlackListDelay = this.settings.questionBlacklist;
+
+        //enable buttons
+        for (let gameButton of this.elements.gameButtonsContainer.children) {
+            gameButton.classList.remove("nohover")
+        }
+
+        ResultsHandler.clearResults();
+        ResultsHandler.hideResultsScreenNoFade();
+        GlobalTimer.reset();
+
+        this.startGame();
+    }
+
     static startGame() {
         if (!this.initialized) throw new Error("Game not initialized");
+        this.gameIsInProgress = true;
+
+        this.updateQuestionNumber();
 
         const warmupScreenElement = this.elements.warmupScreenElement;
         warmupScreenElement.setAttribute("style", "display:flex;")
 
         let n = 3;
+        warmupScreenElement.innerHTML = "";
 
         let interval = setInterval(() => {
             let text = n <= 0 ? "Go!" : n;
@@ -117,6 +147,7 @@ class Game {
 
     }
 
+    //basically adds all the rounds into the results
     static updateResultsRounds() {
 
         for (let round of this.gameData.rounds) {
@@ -137,6 +168,8 @@ class Game {
         //and im too lazy to change it
         this.updateQuestionNumber();
 
+        this.gameIsInProgress = false;
+
         GlobalTimer.stop();
 
         this.updateResultsRounds();
@@ -146,7 +179,8 @@ class Game {
 
         ResultsHandler.showResultsScreen();
 
-        for(let gameButton of this.elements.gameButtonsContainer.children){
+        //disable buttons
+        for (let gameButton of this.elements.gameButtonsContainer.children) {
             gameButton.classList.add("nohover")
         }
     }
@@ -175,7 +209,7 @@ class Game {
 
         //blacklisting logic
 
-        //+1 since this is decremented once at initailization
+        //+1 since this is decremented once for the first question
         if (this.questionBlackListDelay + 1 <= 0) {
             questionBlackList.shift()
         } else {
