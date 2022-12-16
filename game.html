@@ -26,7 +26,10 @@
                 <p id="resultsScore" class="results-text"></p>
 
                 <br>
-                <p id="showResults" class="results-show results-text">show detailed results</p>
+                <p id="restartGame" class="results-button results-text">restart game</p>
+                <p id="mainMenu" class="results-button results-text">return to main menu</p>
+                <br>
+                <p id="showResults" class="results-button results-text">show detailed results</p>
             </div>
             <hr>
             <div class="results-container flex-container center-horizontal" id="resultsContainer" style="display:none;">
@@ -131,6 +134,9 @@
     gameElements.questionTextElement = document.getElementById("questionText");
     gameElements.questionNumberElement = document.getElementById("questionNumber");
     gameElements.warmupScreenElement = document.getElementById("warmupScreen");
+    gameElements.returnToMainMenuButton = document.getElementById("mainMenu");
+    gameElements.restartGameButton = document.getElementById("restartGame");
+
     Game.init(gameElements);
 
     //start game

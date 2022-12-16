@@ -87,6 +87,9 @@ class Game {
         this.elements = elements;
         this.initialized = true;
 
+        this.elements.restartGameButton.addEventListener("click", this.restartGame.bind(this));
+        this.elements.returnToMainMenuButton.addEventListener("click", () => {location.href="./index.html"});
+
         this.settings = JSON.parse(localStorage.getItem("settings"));
         this.gamePack = new GamePack(JSON.parse(localStorage.getItem("activeGamePack")));
         this.generateGameButtons(this.settings.totalChoices);
@@ -113,8 +116,9 @@ class Game {
         }
 
         ResultsHandler.clearResults();
-        ResultsHandler.hideResultsScreenNoFade();
+        ResultsHandler.hideResultsScreen();
         GlobalTimer.reset();
+        Fade.fadeIn(0.5, this.elements.warmupScreenElement,"flex")
 
         this.startGame();
     }

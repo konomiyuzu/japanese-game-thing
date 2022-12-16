@@ -13,6 +13,7 @@ for(let folder of folders){
     if(!fs.existsSync(`${folderPath}/name.txt`)){
         console.log(`no name exists for \"${folder}\", skipping`)
         continue;
+        
     }
 
     let name = fs.readFileSync(`${folderPath}/name.txt`,"utf-8");

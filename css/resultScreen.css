@@ -81,12 +81,13 @@
     font-size: 20px;
 }
 
-.results-show{
+.results-button{
     cursor: pointer;
     transition: all .2s ease-in-out;
     user-select: none;
 }
 
-.results-show:hover{
+.results-button:hover{
     transform: scale(1.1);
+    color:#5280ff;
 }
