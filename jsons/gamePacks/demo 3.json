@@ -1,0 +1,28 @@
+{
+    "name":"demo3",
+    "answerPools": [
+        {
+            "id":0,
+            "pool": [
+                "a",
+                "i"
+            ]
+        }
+    ],
+    "questionPools":[
+        {
+            "id":0,
+            "answerPoolId":0,
+            "pool":[
+                {
+                    "question":"あ",
+                    "answer":"a"
+                },
+                {
+                    "question":"い",
+                    "answer":"i"
+                }
+            ]
+        }
+    ]
+}

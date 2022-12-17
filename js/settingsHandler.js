@@ -136,6 +136,7 @@ class SettingsHandler {
     static updateGamePack(event) {
         this.activeGamePack = this.gamePacks[event.target.value];
         this.setLocalActiveGamepack();
+        this.validateAllTextSettings();
         return this.activeGamePack;
     }
 
@@ -223,6 +224,22 @@ class SettingsHandler {
             catch (e) {
             }
 
+        }
+    }
+
+    static validateAllTextSettings(){
+
+        //could probably be made shorter but i think this is clear enough
+        for(const textInput of this.elements.settings.filter(x => x.input.type == "text")){
+            const id = textInput.id;
+            const value = textInput.input.value;
+
+            const valid = this.checkValidity(id, value);
+            if (valid.valid == false){
+                this.pushError(id, valid.errorMessage)
+            } else {
+                this.clearError(id)
+            }
         }
     }
 
