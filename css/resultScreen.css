@@ -86,8 +86,3 @@
     transition: all .2s ease-in-out;
     user-select: none;
 }
-
-.results-button:hover{
-    transform: scale(1.1);
-    color:#5280ff;
-}

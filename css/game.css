@@ -36,15 +36,6 @@
     transition: all .2s ease-in-out;
 }
 
-.gameButton:hover:not(.nohover){
-    transform: scale(1.1);
-    color:#5280ff;
-}
-
-.nohover{
-    pointer-events: none;
-}
-
 .countdownText{
     color:white;
     font-size: 100px;

@@ -44,3 +44,12 @@ body {
     width: 100vw;
     height: 100vh;
 }
+
+.hover-effects:hover:not(.nohover){
+    transform: scale(1.1);
+    color:#5280ff;
+}
+
+.nohover{
+    pointer-events: none;
+}
