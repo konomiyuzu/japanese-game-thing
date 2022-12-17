@@ -333,7 +333,7 @@ class SettingsHandler {
             out.valid = false;
             out.errorMessage = "Question cooldown cannot be less than 0"
         }
-        else if (value > this.getMinLength(this.activeGamePack.questionPools)){
+        else if (value >= this.getMinLength(this.activeGamePack.questionPools)){
             out.valid = false;
             out.errorMessage = "Chosen gamepack does not have enough questions"
         }
