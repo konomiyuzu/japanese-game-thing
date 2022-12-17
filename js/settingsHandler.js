@@ -149,6 +149,11 @@ class SettingsHandler {
     static resetSettingsToDefault(){
         this.loadSettingsDefault();
         this.updateInputs();
+        //maybe make the default settings baked into the game pack itself so we can have multiple default settings for gamepacks of different lengths
+        //but this also works since it sets it to the maxium which will effectively be the default although its unchangable
+        //i will consider doing so later
+        this.validateAllTextSettings();
+
         this.clearErrorAll();
     }
 
@@ -237,10 +242,14 @@ class SettingsHandler {
             const valid = this.checkValidity(id, value);
             if (valid.valid == false){
                 this.pushError(id, valid.errorMessage)
+                this.settings[id] = valid.recommendedValue;
+                this.setLocalSettings();
             } else {
                 this.clearError(id)
             }
         }
+
+        this.updateInputs();
     }
 
     static receiveTextSettingChange(event) {
@@ -250,6 +259,8 @@ class SettingsHandler {
 
         if (valid.valid == false) {
             this.pushError(id, valid.errorMessage)
+            this.settings[id] = valid.recommendedValue;
+            this.setLocalSettings();
         } else {
             this.clearError(id)
             this.settings[id] = value;
@@ -308,10 +319,13 @@ class SettingsHandler {
         //the condtion is be smaller than the smallest answer pool and not be > 1
         else if (value > this.getMinLength(this.activeGamePack.answerPools)) {
             out.valid = false;
-            out.errorMessage = "Chosen gamepack does not have enough choices"
+            out.errorMessage = "Chosen gamepack does not have enough choices";
+            out.recommendedValue = this.getMinLength(this.activeGamePack.answerPools);
         } else if (value <= 1) {
             out.valid = false;
             out.errorMessage = "Total choices cannot be less than 2"
+            out.recommendedValue = 2
+
         }
         return out;
     }
@@ -330,6 +344,7 @@ class SettingsHandler {
         else if (value <= 0) {
             out.valid = false;
             out.errorMessage = "Total questions cannot be less than 1"
+            out.recommendedValue = 1;
         }
 
         return out;
@@ -349,10 +364,12 @@ class SettingsHandler {
         else if (value < 0) {
             out.valid = false;
             out.errorMessage = "Question cooldown cannot be less than 0"
+            out.recommendedValue = 0;
         }
         else if (value >= this.getMinLength(this.activeGamePack.questionPools)){
             out.valid = false;
             out.errorMessage = "Chosen gamepack does not have enough questions"
+            out.recommendedValue = this.getMinLength(this.activeGamePack.questionPools) - 1;
         }
 
         return out;
