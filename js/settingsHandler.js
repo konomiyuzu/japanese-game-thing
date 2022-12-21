@@ -259,7 +259,7 @@ class SettingsHandler {
 
         if (valid.valid == false) {
             this.pushError(id, valid.errorMessage)
-            this.settings[id] = valid.recommendedValue;
+            if(valid.recommendedValue != null) this.settings[id] = valid.recommendedValue;
             this.setLocalSettings();
         } else {
             this.clearError(id)
