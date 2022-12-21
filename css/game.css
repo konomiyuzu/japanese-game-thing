@@ -43,3 +43,16 @@
     text-shadow: 0px 0px 5px white;
     user-select: none;
 }
+
+.menu-button-container{
+    flex-flow: column;
+    position: absolute;
+    
+    width: 100px;
+}
+
+.menu-button{
+    margin: 5px;
+    cursor: pointer;
+    user-select: none;
+}
