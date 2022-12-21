@@ -54,6 +54,15 @@ class Round {
         this.correct = round.correct ?? false;
     }
 
+    //basically check if the data is complete (no blanks)
+    get complete(){
+        return !(
+            this.question == "" ||
+            this.correctAnswer == "" ||
+            this.chosenAnswer == ""
+        )
+    }
+
     update(round) {
         this.question = round.question ?? this.question;
         this.correctAnswer = round.correctAnswer ?? this.correctAnswer;
@@ -87,8 +96,9 @@ class Game {
         this.elements = elements;
         this.initialized = true;
 
-        this.elements.restartGameButton.addEventListener("click", this.restartGame.bind(this));
-        this.elements.returnToMainMenuButton.addEventListener("click", () => {location.href="./index.html"});
+        this.elements.restartGameButtons.map(x => x.addEventListener("click", this.restartGame.bind(this)));
+        this.elements.returnToMainMenuButtons.map(x => x.addEventListener("click", () => {location.href="./index.html"}));
+        this.elements.endGameButtons.map(x => x.addEventListener("click", this.endGame.bind(this)));
 
         this.settings = JSON.parse(localStorage.getItem("settings"));
         this.gamePack = new GamePack(JSON.parse(localStorage.getItem("activeGamePack")));
@@ -99,7 +109,9 @@ class Game {
 
     static restartGame() {
         if (!this.initialized) throw new Error("Game not initialized");
-        if (this.gameIsInProgress) throw new Error("there is still a Game in progress");
+
+        //actually still works even if game is in progress
+        //if (this.gameIsInProgress) this.endGame();
 
         //reset gamedata
         this.gameData = {
@@ -117,7 +129,7 @@ class Game {
 
         ResultsHandler.clearResults();
         ResultsHandler.hideResultsScreen();
-        GlobalTimer.reset();
+        GlobalTimer.reset(); //this function also stops the clock if it was still running
         Fade.fadeIn(0.5, this.elements.warmupScreenElement,"flex")
 
         this.startGame();
@@ -125,6 +137,7 @@ class Game {
 
     static startGame() {
         if (!this.initialized) throw new Error("Game not initialized");
+        if (this.gameIsInProgress) throw new Error("there is already a game in progress");
         this.gameIsInProgress = true;
 
         this.updateQuestionNumber();
@@ -156,6 +169,8 @@ class Game {
 
         for (let round of this.gameData.rounds) {
 
+            if(!round.complete) continue;
+
             const question = round.question;
             const correctAnswer = round.correctAnswer;
             const chosenAnswer = round.chosenAnswer;
@@ -167,6 +182,7 @@ class Game {
 
     static endGame() {
         if (!this.initialized) throw new Error("Game not initialized");
+        if (!this.gameIsInProgress) throw new Error("No game in progress to end");
 
         //since the way its setup it isnt ran if a new question isnt generated;
         //and im too lazy to change it
@@ -178,7 +194,7 @@ class Game {
 
         this.updateResultsRounds();
         ResultsHandler.data.score = this.gameData.score;
-        ResultsHandler.data.scoreMax = this.settings.totalQuestions;
+        ResultsHandler.data.scoreMax = this.gameData.currentQuestionNumber;
         ResultsHandler.data.timeString = Timer.formatTime(GlobalTimer.currentTime);
 
         ResultsHandler.showResultsScreen();

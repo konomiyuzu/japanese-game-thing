@@ -13,18 +13,9 @@
     transition: all .2s ease-in-out;
 }
 
-.startButton:hover {
-    transform: scale(1.1);
-}
-
 .startButton-text {
     user-select: none;
     transition: all .2s ease-in-out;
-}
-
-.startButton:hover>.startButton-text {
-    color: #5280ff;
-    transform: scale(1.1);
 }
 
 .settings-box {
@@ -49,11 +40,6 @@
 
     transition: all .2s ease-in-out;
 
-}
-
-.settings-header-button:hover {
-    transform: scale(1.1);
-    color: #5280ff;
 }
 
 .setting-input {
@@ -82,11 +68,6 @@
     cursor:pointer;
 
     transition: all .2s ease-in-out
-}
-
-.settings-reset-button:hover {
-    color: #5280ff;
-    transform: scale(1.1);
 }
 
 .loading-screen-text{

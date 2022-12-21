@@ -26,10 +26,10 @@
                 <p id="resultsScore" class="results-text"></p>
 
                 <br>
-                <p id="restartGame" class="results-button results-text">restart game</p>
-                <p id="mainMenu" class="results-button results-text">return to main menu</p>
+                <p id="resultsRestartGame" class="results-button results-text hover-effects">restart game</p>
+                <p id="resultsMainMenu" class="results-button results-text hover-effects">return to main menu</p>
                 <br>
-                <p id="showResults" class="results-button results-text">show detailed results</p>
+                <p id="showResults" class="results-button results-text hover-effects">show detailed results</p>
             </div>
             <hr>
             <div class="results-container flex-container center-horizontal" id="resultsContainer" style="display:none;">
@@ -39,7 +39,12 @@
         </div>
     </div>
 
-
+    <!-- menu buttons -->
+    <div class="box flex-container menu-button-container">
+        <p class="menu-button hover-effects" id="menuEndGame">end game</p>
+        <p class="menu-button hover-effects" id="menuRestartGame">restart game</p>
+        <p class="menu-button hover-effects" id="menuMainMenu">return to main menu</p>
+    </div>
     <!-- game elements -->
 
     <div class="flex-container center-horizontal">
@@ -87,7 +92,7 @@
 </template>
 
 <template id="choiceButtonTemplate">
-    <div class="gameButton box flex-container center-horizontal center-vertical"></div>
+    <div class="gameButton box flex-container center-horizontal center-vertical hover-effects"></div>
 </template>
 
 <!-- scripts -->
@@ -103,17 +108,17 @@
     let initialized = sessionStorage.getItem("initialized")
 
     //just in case i do == false too even though it should not be possible
-    if(initialized == null || initialized == false) {
+    if (initialized == null || initialized == false) {
         console.warn("session not initalized, sending player to home screen")
-        location.href="./index.html"
-        
+        location.href = "./index.html"
+
         //throwing to stop code execution although its not 100% necessary
         throw new Error("session not initalized, sending player to home screen")
     }
 
     //resultHandler init
     const resultHandlerElements = {}
-    
+
     resultHandlerElements.templateElement = document.getElementById("resultTemplate");
     resultHandlerElements.resultsScreenElement = document.getElementById("results");
     resultHandlerElements.resultsContainer = document.getElementById("resultsContainer");
@@ -134,8 +139,19 @@
     gameElements.questionTextElement = document.getElementById("questionText");
     gameElements.questionNumberElement = document.getElementById("questionNumber");
     gameElements.warmupScreenElement = document.getElementById("warmupScreen");
-    gameElements.returnToMainMenuButton = document.getElementById("mainMenu");
-    gameElements.restartGameButton = document.getElementById("restartGame");
+
+    gameElements.returnToMainMenuButtons = [
+        document.getElementById("resultsMainMenu"),
+        document.getElementById("menuMainMenu")
+    ];
+    gameElements.restartGameButtons = [
+        document.getElementById("resultsRestartGame"),
+        document.getElementById("menuRestartGame"),
+
+    ]
+    gameElements.endGameButtons = [
+        document.getElementById("menuEndGame")
+    ]
 
     Game.init(gameElements);
 
