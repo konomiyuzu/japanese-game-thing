@@ -314,6 +314,7 @@ class Game {
     }
 
     static answer(gameButtonElement) {
+        if(!this.gameIsInProgress) throw new Error("no game in progress")
         //since the id is formatted as gameButton-${i}
         let answerId = gameButtonElement.target.id;
         answerId = answerId.replace(/gameButton-/gi, "");
