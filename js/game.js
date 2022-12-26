@@ -213,14 +213,13 @@ class Game {
         ResultsHandler.data.scoreMax = this.gameData.currentQuestionNumber;
         ResultsHandler.data.timeString = Timer.formatTime(GlobalTimer.currentTime);
 
-        ResultsHandler.showResultsScreen();
-
-        this.gameIsInProgress = false;
-        
+        ResultsHandler.showResultsScreen();        
         //disable buttons
         for (let gameButton of this.elements.gameButtonsContainer.children) {
             gameButton.classList.add("nohover")
         }
+
+        this.gameIsInProgress = false;
     }
 
     static generateGameButtons(amount) {
