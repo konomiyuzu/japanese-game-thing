@@ -315,7 +315,7 @@ class Game {
 
     static answer(gameButtonElement) {
         if(!this.gameIsInProgress) throw new Error("cannot answer while there is no game in progress")
-        if(!this.warmupIsInProgress) throw new Error("cannot answer while warmup is in progress")
+        if(this.warmupIsInProgress) throw new Error("cannot answer while warmup is in progress")
         
         //since the id is formatted as gameButton-${i}
         let answerId = gameButtonElement.target.id;
