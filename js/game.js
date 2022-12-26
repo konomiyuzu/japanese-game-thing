@@ -206,8 +206,6 @@ class Game {
         //and im too lazy to change it
         this.updateQuestionNumber();
 
-        this.gameIsInProgress = false;
-
         GlobalTimer.stop();
 
         this.updateResultsRounds();
@@ -217,6 +215,8 @@ class Game {
 
         ResultsHandler.showResultsScreen();
 
+        this.gameIsInProgress = false;
+        
         //disable buttons
         for (let gameButton of this.elements.gameButtonsContainer.children) {
             gameButton.classList.add("nohover")
