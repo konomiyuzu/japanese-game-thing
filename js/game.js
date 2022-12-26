@@ -49,7 +49,7 @@ class QuestionPool extends Pool {
 class Round {
 
     //basically check if the data is complete (no blanks)
-    get complete(){
+    get complete() {
         return !(
             this.question == null ||
             this.correctAnswer == null ||
@@ -91,6 +91,7 @@ class Game {
     static settings;
     static gamePack;
     static gameIsInProgress = false;
+    static warmupIsInProgress = false;
 
     static gameData = {
         score: 0,
@@ -105,21 +106,23 @@ class Game {
         this.initialized = true;
 
         this.elements.restartGameButtons.map(x => x.addEventListener("click", this.restartGame.bind(this)));
-        this.elements.returnToMainMenuButtons.map(x => x.addEventListener("click", () => {location.href="./index.html"}));
+        this.elements.returnToMainMenuButtons.map(x => x.addEventListener("click", () => { location.href = "./index.html" }));
         this.elements.endGameButtons.map(x => x.addEventListener("click", this.endGame.bind(this)));
 
         this.settings = JSON.parse(localStorage.getItem("settings"));
         this.gamePack = new GamePack(JSON.parse(localStorage.getItem("activeGamePack")));
         this.generateGameButtons(this.settings.totalChoices);
 
+        //hotkeys
+        document.addEventListener("keypress",(e) => {if(e.key == "r") Game.restartGame()})
+        document.addEventListener("keypress",(e) => {if(e.key == "e") Game.endGame()})
+
         this.questionBlackListDelay = this.settings.questionBlacklist;
     }
 
     static restartGame() {
         if (!this.initialized) throw new Error("Game not initialized");
-
-        //actually still works even if game is in progress
-        //if (this.gameIsInProgress) this.endGame();
+        if(this.warmupIsInProgress) throw new Error("cannot restart while warmup is in progress");
 
         //reset gamedata
         this.gameData = {
@@ -138,8 +141,10 @@ class Game {
         ResultsHandler.clearResults();
         ResultsHandler.hideResultsScreen();
         GlobalTimer.reset(); //this function also stops the clock if it was still running
-        Fade.fadeIn(0.5, this.elements.warmupScreenElement,"flex")
+        Fade.fadeIn(0.5, this.elements.warmupScreenElement, "flex")
 
+        this.gameIsInProgress = false; //start game wont run unless this is false, if i had planned this better this would work differently
+        //but i didnt plan for the future and this is what i have to live with
         this.startGame();
     }
 
@@ -147,7 +152,8 @@ class Game {
         if (!this.initialized) throw new Error("Game not initialized");
         if (this.gameIsInProgress) throw new Error("there is already a game in progress");
         this.gameIsInProgress = true;
-
+        this.warmupIsInProgress = true;
+        
         this.updateQuestionNumber();
 
         const warmupScreenElement = this.elements.warmupScreenElement;
@@ -160,6 +166,7 @@ class Game {
             let text = n <= 0 ? "Go!" : n;
             warmupScreenElement.innerHTML = text;
             n--
+            
 
         }, 1000)
 
@@ -167,6 +174,7 @@ class Game {
             clearInterval(interval);
             warmupScreenElement.setAttribute("style", "display:none;")
             this.nextQuestion();
+            this.warmupIsInProgress = false;
             GlobalTimer.start();
         }, 5000)
 
@@ -177,7 +185,7 @@ class Game {
 
         for (let round of this.gameData.rounds) {
 
-            if(!round.complete) continue;
+            if (!round.complete) continue;
 
             const question = round.question;
             const correctAnswer = round.correctAnswer;
@@ -191,6 +199,8 @@ class Game {
     static endGame() {
         if (!this.initialized) throw new Error("Game not initialized");
         if (!this.gameIsInProgress) throw new Error("No game in progress to end");
+        if(this.warmupIsInProgress) throw new Error("cannot end game while warmup is in progress")
+
 
         //since the way its setup it isnt ran if a new question isnt generated;
         //and im too lazy to change it
@@ -221,8 +231,21 @@ class Game {
 
             div.addEventListener("click", this.answer.bind(this));
             div.id = `gameButton-${i}`;
-
             this.elements.gameButtonsContainer.appendChild(div);
+
+            //add hotkeys to the game buttons if they are less than 10 buttons
+            if (amount <= 10) {
+                document.addEventListener(`keypress`, (e) => {
+                    if (!Game.gameIsInProgress) return;
+                    try {
+                        //(i + 1) % 10 return 1 2 3 4 5 6 7 8 9 0
+                        if (e.key == (i + 1) % 10) div.click();
+                    }
+                    //there can be an error if the keys are pressed during the warmup screen, but they should be able
+                    //to be safely ignored
+                    catch (e) { }
+                })
+            }
         }
     }
 
