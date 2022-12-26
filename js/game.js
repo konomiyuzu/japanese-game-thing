@@ -47,27 +47,35 @@ class QuestionPool extends Pool {
 
 //idk why i made it into a class but i did
 class Round {
-    constructor(round) {
-        this.question = round.question ?? "";
-        this.correctAnswer = round.correctAnswer ?? "";
-        this.chosenAnswer = round.chosenAnswer ?? "";
-        this.correct = round.correct ?? false;
-    }
 
     //basically check if the data is complete (no blanks)
     get complete(){
         return !(
-            this.question == "" ||
-            this.correctAnswer == "" ||
-            this.chosenAnswer == ""
+            this.question == null ||
+            this.correctAnswer == null ||
+            this.chosenAnswer == null ||
+            this.correct == null
         )
     }
 
-    update(round) {
-        this.question = round.question ?? this.question;
-        this.correctAnswer = round.correctAnswer ?? this.correctAnswer;
-        this.chosenAnswer = round.chosenAnswer ?? this.chosenAnswer;
-        this.correct = round.correct ?? this.correct;
+    setQuestion(question){
+        this.question = question;
+        return this;
+    }
+
+    setCorrectAnswer(correctAnswer){
+        this.correctAnswer = correctAnswer;
+        return this;
+    }
+
+    setChosenAnswer(chosenAnswer){
+        this.chosenAnswer = chosenAnswer;
+        return this;
+    }
+
+    setCorrect(correct){
+        this.correct = correct;
+        return this;
     }
 }
 
@@ -264,11 +272,11 @@ class Game {
     static startRound(question, choices) {
         if (!this.initialized) throw new Error("Game not initialized");
 
-        let round = {
-            question: question.question,
-            correctAnswer: question.answer
-        }
-        this.gameData.rounds.push(new Round(round));
+        let round = new Round()
+        .setQuestion(question.question)
+        .setCorrectAnswer(question.answer)
+
+        this.gameData.rounds.push(round);
 
         this.elements.questionTextElement.innerHTML = question.question;
 
@@ -292,13 +300,10 @@ class Game {
         const answerIsCorrect = answerId == this.#correctAnswerId;
 
         if (answerIsCorrect) this.gameData.score++;
-        let round = this.getLatestRound();
-
-        let roundData = {
-            chosenAnswer: gameButtonElement.target.innerHTML,
-            correct: answerIsCorrect
-        }
-        round.update(roundData)
+        let round = this.getLatestRound()
+        .setChosenAnswer(gameButtonElement.target.innerHTML)
+        .setCorrect(answerIsCorrect)
+        
         this.gameData.currentQuestionNumber++;
         if (this.gameData.currentQuestionNumber == this.settings.totalQuestions) this.endGame();
         else this.nextQuestion();
