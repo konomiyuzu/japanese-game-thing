@@ -23,7 +23,7 @@
 }
 
 .startButton:hover>.startButton-text {
-    color: #5280ff;
+    color: #15b95f;
     transform: scale(1.1);
 }
 
@@ -53,7 +53,7 @@
 
 .settings-header-button:hover {
     transform: scale(1.1);
-    color: #5280ff;
+    color: #15b95f;
 }
 
 .setting-input {
@@ -85,7 +85,7 @@
 }
 
 .settings-reset-button:hover {
-    color: #5280ff;
+    color: #15b95f;
     transform: scale(1.1);
 }
 
